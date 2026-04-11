@@ -1,0 +1,71 @@
+ %%{init: {
+   "theme": "base",
+   "themeVariables": {
+     "fontFamily": "Inter, Segoe UI, sans-serif",
+     "lineColor": "#64748b",
+     "primaryTextColor": "#1e293b"
+   },
+   "flowchart": { "curve": "basis", "nodeSpacing": 50, "rankSpacing": 55 }
+ }}%%
+
+ flowchart TB
+     U(("You"))
+
+     Access["Access Layer<br/>Discord · Slack · Telegram"]
+
+     Orch["Orchestrator Agent<br/>Understands intent · Routes · Schedules"]
+
+     Workers{{"Worker Agents<br/>Resources · Ideas · News · Research · Digest"}}
+
+     Sources[/"External Sources<br/>Web · RSS · YouTube · News APIs"\]
+
+     subgraph Infra["Shared Infrastructure"]
+         direction LR
+         Ollama["Ollama Runtime<br/>Gemma 4 · Embeddings"]
+         Store[("Storage<br/>SQL · Vectors · Files")]
+         Obs["Observability<br/>Logs · Metrics · Context"]
+     end
+
+     Panel["Control Panel<br/>Dashboard · Logs · Activity · Context"]
+
+     U -->|commands| Access
+     Access -->|message| Orch
+     Orch -->|jobs| Workers
+     Workers -->|fetch| Sources
+
+     Orch <-->|"thinks via"| Ollama
+     Workers <-->|"think via"| Ollama
+
+     Orch <-->|state| Store
+     Workers <-->|"read & write"| Store
+
+     Orch -.-> Obs
+     Workers -.-> Obs
+
+     U -.->|monitor| Panel
+     Panel -.-> Store
+     Panel -.-> Obs
+     Panel -.-> Orch
+
+     classDef user fill:#1e293b,stroke:#0f172a,color:#f8fafc,stroke-width:2px
+     classDef access fill:#dbeafe,stroke:#2563eb,color:#1e3a5f,stroke-width:1.5px
+     classDef agent fill:#ede9fe,stroke:#7c3aed,color:#3b0764,stroke-width:1.5px
+     classDef worker fill:#dcfce7,stroke:#16a34a,color:#14532d,stroke-width:1.5px
+     classDef source fill:#fef9c3,stroke:#ca8a04,color:#713f12,stroke-width:1.5px
+     classDef infra fill:#f1f5f9,stroke:#94a3b8,color:#334155,stroke-width:1.5px
+     classDef panel fill:#e0e7ff,stroke:#4f46e5,color:#312e81,stroke-width:1.5px
+
+     class U user
+     class Access access
+     class Orch agent
+     class Workers worker
+     class Sources source
+     class Ollama,Store,Obs infra
+     class Panel panel
+
+     style Infra fill:#f8fafc,stroke:#cbd5e1,stroke-width:1px
+
+     linkStyle 0,1,2,3 stroke:#2563eb,stroke-width:2.5px
+     linkStyle 4,5 stroke:#7c3aed,stroke-width:2px
+     linkStyle 6,7 stroke:#ea580c,stroke-width:1.5px
+     linkStyle 8,9,10,11,12 stroke:#6366f1,stroke-width:1px,stroke-dasharray:5 5
