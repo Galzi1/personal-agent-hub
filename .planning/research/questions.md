@@ -21,3 +21,14 @@
   - What consolidation or dream process should merge duplicates and prune stale memories?
   - How should example corpora or taste libraries sit alongside instructions and memory?
 - **Action:** Design a knowledge and memory architecture that complements MicroClaw storage without over-indexing on embeddings
+
+## RQ-3: Implementing layered memory on top of MicroClaw storage
+- **Date:** 2026-04-11
+- **Context:** The emerging direction calls for mostly per-agent memory with a smaller shared project memory, automatic extraction after meaningful interactions, and periodic consolidation. The open design question is how those concepts should map onto MicroClaw's existing storage surfaces.
+- **Key considerations:**
+  - Which memory classes belong in SQL records versus files versus vector search?
+  - What should remain transient interaction history instead of durable memory?
+  - How should agent-local memory and shared project memory be isolated and queried?
+  - What metadata is needed to support consolidation, confidence scoring, and expiry?
+  - How should validation status be recorded for successful patterns that become memory?
+- **Action:** Propose a storage and retrieval model for layered memory that fits MicroClaw without collapsing everything into vector retrieval
