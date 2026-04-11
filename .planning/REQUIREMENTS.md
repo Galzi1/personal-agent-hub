@@ -66,13 +66,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| _Populated during roadmap creation_ | — | Pending |
+| SRC-01 | Phase 1 | Pending |
+| SRC-02 | Phase 3 | Pending |
+| SIG-01 | Phase 2 | Pending |
+| SIG-02 | Phase 3 | Pending |
+| SIG-03 | Phase 3 | Pending |
+| SIG-04 | Phase 2 | Pending |
+| DGST-01 | Phase 3 | Pending |
+| DGST-02 | Phase 3 | Pending |
+| DGST-03 | Phase 3 | Pending |
+| DGST-04 | Phase 1 | Pending |
+| FDBK-01 | Phase 4 | Pending |
+| FDBK-02 | Phase 4 | Pending |
+| FDBK-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-04-11*  
-*Last updated: 2026-04-11 after initial definition*
+*Last updated: 2026-04-11 after roadmap creation*
