@@ -6,18 +6,32 @@ This roadmap delivers one explicit daily AI-intelligence workflow from end to en
 
 ## Phases
 
+**6 phases total (0, 1, 1.5, 2, 3, 4)**
+
 **Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+- Integer phases (0, 1, 2, 3, 4): Planned milestone work
+- Decimal phases (1.5): Risk-informed insertions addressing validated concerns
 
 Decimal phases appear between their surrounding integers in numeric order.
 
+- [ ] **Phase 0: Validation Spikes** - De-risk critical assumptions before committing to implementation.
 - [ ] **Phase 1: Ingestion Foundation & Run Visibility** - Establish curated intake and make each daily digest run observable.
+- [ ] **Phase 1.5: Thin Digest** - Deliver a minimal daily digest to Discord to close the time-to-value gap.
 - [ ] **Phase 2: Canonical Story Formation** - Collapse overlapping coverage into trustworthy story records with visible confidence.
 - [ ] **Phase 3: Ranked Discord Digest** - Deliver a short, topic-aware, cited AI digest in Discord.
 - [ ] **Phase 4: Feedback & Suppression** - Let the user shape future digests with direct feedback and mutes.
 
 ## Phase Details
+
+### Phase 0: Validation Spikes
+**Goal**: Validate that MicroClaw, Ollama, and the starter watchlist are sufficient for v1 before writing application code.
+**Depends on**: Nothing
+**Requirements**: None (risk mitigation, not feature delivery)
+**Success Criteria** (what must be TRUE):
+  1. MicroClaw spike confirms scheduler, Discord posting, and SQLite persistence work on Windows (R1).
+  2. Ollama model evaluation on 10-20 representative ranking/summarization tasks meets minimum quality bar (R3).
+  3. Watchlist backtest against one real week of AI news shows acceptable coverage (R4).
+**Plans**: TBD
 
 ### Phase 1: Ingestion Foundation & Run Visibility
 **Goal**: User can rely on a local-first daily digest workflow that gathers candidate updates from a curated watchlist and makes each run outcome visible.
@@ -34,6 +48,15 @@ Plans:
 - [ ] 01-02-PLAN.md — Define the trusted local watchlist, fixture-backed SRC-01 tests, and allowlisted multi-source raw-item ingestion.
 - [ ] 01-03-PLAN.md — Implement run IDs, retry/rerun lineage, append-only events, and the exact raw-event trace route.
 - [ ] 01-04-PLAN.md — Wire the end-to-end Phase 1 workflow, prove the live MicroClaw + Ollama runtime, add three separate Discord milestone posts, and register the 08:00 schedule.
+
+### Phase 1.5: Thin Digest
+**Goal**: Post a simple formatted list of ingested items to Discord daily, giving the user a tangible artifact before dedup and ranking exist.
+**Depends on**: Phase 1
+**Requirements**: None (risk mitigation for R2 — early value delivery)
+**Success Criteria** (what must be TRUE):
+  1. User receives a daily Discord message listing ingested items with source and title.
+  2. End-to-end pipeline (schedule, ingest, format, deliver) is validated.
+**Plans**: TBD
 
 ### Phase 2: Canonical Story Formation
 **Goal**: User gets one trustworthy story per underlying update, with uncertainty visible before stories are selected into the digest.
@@ -81,11 +104,22 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 0 → 1 → 1.5 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
+| 0. Validation Spikes | 0/TBD | Not started | - |
 | 1. Ingestion Foundation & Run Visibility | 0/4 | Not started | - |
+| 1.5. Thin Digest | 0/TBD | Not started | - |
 | 2. Canonical Story Formation | 0/TBD | Not started | - |
 | 3. Ranked Discord Digest | 0/TBD | Not started | - |
 | 4. Feedback & Suppression | 0/TBD | Not started | - |
+
+## Risk Register
+
+See `.planning/RISK-REVIEW.md` for the full risk register (R1-R10), assumption analysis, and recommended actions.
+
+**Top risks informing roadmap structure:**
+- **R1 (Critical):** MicroClaw proves insufficient — mitigated by Phase 0 validation spike
+- **R2 (High):** Long time to first useful digest — mitigated by Phase 1.5 thin digest milestone
+- **R3 (High):** Local Ollama model quality insufficient — mitigated by Phase 0 evaluation spike
