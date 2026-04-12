@@ -3,11 +3,11 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-04-11T20:10:15.103Z"
-last_activity: 2026-04-11 — Initial roadmap created and traceability mapped
+stopped_at: Risk review integrated; validation spikes precede Phase 1
+last_updated: "2026-04-12T19:17:49.363Z"
+last_activity: 2026-04-12 — Risk review findings integrated into planning artifacts
 progress:
-  total_phases: 4
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,14 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-11)
 
 **Core value:** Deliver a high-signal, low-noise AI intelligence feed early enough to be useful instead of forcing reactive scrolling through repetitive coverage.
-**Current focus:** Phase 1 - Ingestion Foundation & Run Visibility
+**Current focus:** Phase 0 - Validation Spikes
 
 ## Current Position
 
-Phase: 1 of 4 (Ingestion Foundation & Run Visibility)
+Phase: 0 of 6 (Validation Spikes)
 Plan: 0 of 0 in current phase
-Status: Ready to plan
-Last activity: 2026-04-11 — Initial roadmap created and traceability mapped
+Status: Ready to plan Phase 0 validation spikes
+Last activity: 2026-04-12 — Risk review findings integrated into planning artifacts
+
+Note: Phase 0 validation spikes (MicroClaw, Ollama quality, watchlist backtest) should complete before Phase 1 implementation begins. See .planning/RISK-REVIEW.md.
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -62,6 +64,19 @@ Recent decisions affecting current work:
 - [Phase 1]: Treat curated multi-source intake and observable run status as the first delivery boundary.
 - [Phase 2]: Treat canonical story formation as the core domain model for deduplication and confidence handling.
 
+### Tracked Risks
+
+Risk review conducted 2026-04-12. Full register: `.planning/RISK-REVIEW.md`
+
+Top risks actively tracked:
+- **R1 (Critical):** MicroClaw may prove insufficient — validation spike in Phase 0
+- **R2 (High):** Long time to first useful digest — thin digest milestone in Phase 1.5
+- **R3 (High):** Ollama model quality unverified — evaluation spike in Phase 0
+
+Additional concerns:
+- **R6 (Medium):** Over-planning vs execution — planning-to-execution ratio guard active
+- **R7 (Medium):** Windows-specific runtime issues — covered by Phase 0 MicroClaw spike
+
 ### Pending Todos
 
 From .planning/todos/pending/ — ideas captured during sessions
@@ -72,9 +87,17 @@ None yet.
 
 - Need the exact Discord feedback UX decided before Phase 4 execution.
 - Need the exact starter source allowlist chosen during Phase 1 planning.
+- MicroClaw validation spike must pass before Phase 1 implementation (R1).
+- Ollama model quality must meet minimum thresholds before Phase 2 planning (R3).
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260412-uyu | Adjust planning artifacts according to risk review recommendations | 2026-04-12 | ea1a6c6 | [260412-uyu-adjust-planning-artifacts-according-to-r](./quick/260412-uyu-adjust-planning-artifacts-according-to-r/) |
 
 ## Session Continuity
 
-Last session: 2026-04-11T20:09:28.668Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-ingestion-foundation-run-visibility/01-CONTEXT.md
+Last session: 2026-04-12T19:17:49.363Z
+Stopped at: Risk review integrated; validation spikes precede Phase 1
+Resume file: .planning/RISK-REVIEW.md
