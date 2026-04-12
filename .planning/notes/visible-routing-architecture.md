@@ -28,3 +28,10 @@ Adopt a hybrid coordination model:
 - Start with one visible workflow instead of the full worker mesh
 - Prove the chat/panel visibility model before expanding the worker taxonomy
 - Use the first workflow to validate routing policies, auditability, and user trust
+
+## External Validation
+The Squid Club article ("I Built a Discord Server Where 7 AI Agents Help Me Build My Product") independently validates this architecture:
+- Author experienced a critical failure where an agent fabricated an "internal channel" — response was to enforce all communication through Discord
+- 5-layer routing enforcement: self-notify blocking, permission matrix, rate limiting, per-pair cooldown, loop prevention
+- Key rule: "If you can't see a message in Discord, it didn't happen"
+- See `.planning/seeds/inter-agent-routing-policy.md` for the enforcement policy seed when multi-agent expansion begins

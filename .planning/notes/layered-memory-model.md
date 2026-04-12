@@ -33,3 +33,13 @@ Use layered memory instead of one generic shared store:
 - Do not treat SQL, vectors, and files as interchangeable memory sinks
 - Design a promotion path from transient interaction logs to durable memory
 - Keep agent taste and examples adjacent to memory, but distinct from instructions
+
+## External Validation
+The Squid Club article ("I Built a Discord Server Where 7 AI Agents Help Me Build My Product") uses an identical 4-class memory model (Context, Feedback, Project, Reference) and independently confirms:
+- Positive feedback must be saved alongside corrections — agents that only learn from mistakes become overly cautious
+- Periodic "dream" consolidation merges duplicates and removes stale entries
+- "The LLM's reasoning loop is the retrieval algorithm" — complete docs with TOCs outperform chunked RAG
+
+## Candidate Implementations (for Phase 4 research)
+- `topoteretes/cognee` (15K⭐) — Knowledge engine for agent memory via knowledge graphs
+- `vectorize-io/hindsight` (9K⭐) — "Agent Memory That Learns" with feedback-driven improvement
