@@ -47,6 +47,7 @@ Deliver a high-signal, low-noise AI intelligence feed early enough to be useful,
 - **Signal Quality**: Relevance and deduplication matter more than raw coverage — reducing noise is a success condition, not a nice-to-have.
 - **Architecture**: Major handoffs must stay visible in chat and auditable in the control panel — trust and debugging depend on this.
 - **Scope**: Prove one end-to-end workflow before expanding worker taxonomy or channel coverage — avoid overbuilding the full architecture upfront.
+- **Planning Guard**: No new planning artifacts until the current phase's first plan is implemented and passing tests (R6 mitigation).
 
 ## Key Decisions
 
@@ -58,6 +59,18 @@ Deliver a high-signal, low-noise AI intelligence feed early enough to be useful,
 | Treat the product as a personal and business task hub, not a coding agent | The intended value is AI intelligence, resource discovery, idea generation, and research support | — Pending |
 | Use layered memory with agent-local and shared project memory | Durable context should be curated by memory class instead of dumped into one generic store | — Pending |
 | Keep major agent handoffs visible in chat and auditable in the control panel | User trust and debugging improve when important routing events are exposed | — Pending |
+| Run validation spikes before Phase 1 implementation | Risk review identified MicroClaw (R1), Ollama quality (R3), and watchlist coverage (R4) as testable unknowns that should be resolved early | Phase 0 added to roadmap |
+| Add thin digest milestone after Phase 1 | Risk review identified motivation attrition from long time to first useful digest (R2) as a high risk | Phase 1.5 added to roadmap |
+| Enforce planning-to-execution ratio guard | Risk review identified over-planning relative to execution (R6) — no new planning artifacts until current phase first plan is implemented and passing | Active constraint |
+
+## Risks
+
+A formal risk review was conducted on 2026-04-12. The full risk register with 10 identified risks (R1-R10), assumption analysis, and recommended actions is maintained in `.planning/RISK-REVIEW.md`.
+
+**Critical risks actively mitigated by roadmap structure:**
+- **R1:** MicroClaw as single point of failure — Phase 0 validation spike
+- **R2:** Long time to first useful digest — Phase 1.5 thin digest milestone
+- **R3:** Local model quality uncertainty — Phase 0 Ollama evaluation spike
 
 ## Evolution
 
@@ -77,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-11 after initialization*
+*Last updated: 2026-04-12 after risk review integration*
