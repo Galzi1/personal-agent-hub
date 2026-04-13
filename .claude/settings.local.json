@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(gsd-discuss-phase)",
+      "WebFetch(domain:www.squid-club.com)",
+      "Skill(gsd-quick)",
+      "Bash(rtk git:*)",
+      "Bash(node:*)"
+    ]
+  }
+}
