@@ -31,7 +31,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. MicroClaw spike confirms scheduler, Discord posting, and SQLite persistence work on Windows (R1).
   2. Ollama model evaluation on 10-20 representative ranking/summarization tasks meets minimum quality bar (R3).
   3. Watchlist backtest against one real week of AI news shows acceptable coverage (R4).
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 00-01-PLAN.md — Install MicroClaw + Ollama, smoke-test 4 critical capabilities (scheduler, Discord, SQLite, control panel), record go/no-go.
+- [ ] 00-02-PLAN.md — Pull Ollama model (~32B), evaluate 10-15 ranking/summarization/explanation tasks, record quality go/no-go.
+- [ ] 00-03-PLAN.md — Fetch 9 starter RSS feeds, collect recent items, user reviews coverage against real AI news week.
 
 ### Phase 1: Ingestion Foundation & Run Visibility
 **Goal**: User can rely on a local-first daily digest workflow that gathers candidate updates from a curated watchlist and makes each run outcome visible.
@@ -108,7 +113,7 @@ Phases execute in numeric order: 0 → 1 → 1.5 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Validation Spikes | 0/TBD | Not started | - |
+| 0. Validation Spikes | 0/3 | Not started | - |
 | 1. Ingestion Foundation & Run Visibility | 0/4 | Not started | - |
 | 1.5. Thin Digest | 0/TBD | Not started | - |
 | 2. Canonical Story Formation | 0/TBD | Not started | - |
