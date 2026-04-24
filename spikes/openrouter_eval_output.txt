@@ -1,0 +1,104 @@
+
+======================================================================
+STEP A: VERIFY MODEL AVAILABILITY (/v1/models)
+======================================================================
+Checking 4 D-18 starters...
+  FOUND: ranking -> google/gemini-3-flash-preview
+  FOUND: summarization -> nvidia/nemotron-3-super-120b-a12b
+  FOUND: why_it_matters -> openai/gpt-5.4
+  MISSING: embedding -> cohere/embed-multilingual-v3.0  [alt-picked fallback: voyage-3]
+
+[ALT-PICKED] 1 issue(s) found. Record in MODEL-EVALUATION-RESULTS.md.
+
+======================================================================
+STEP B: RANKING TASKS (5 batches, 3-5 items each)
+======================================================================
+
+[Ranking 1/5] 3 items...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Ranking 2/5] 4 items...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Ranking 3/5] 3 items...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Ranking 4/5] 4 items...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Ranking 5/5] 3 items...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+======================================================================
+STEP C: SUMMARIZATION TASKS (5 snippets)
+======================================================================
+
+[Summarization 1/5]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Summarization 2/5]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Summarization 3/5]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Summarization 4/5]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Summarization 5/5]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+======================================================================
+STEP D: WHY-IT-MATTERS TASKS (4 headlines)
+======================================================================
+
+[Why-it-matters 1/4]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Why-it-matters 2/4]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Why-it-matters 3/4]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+[Why-it-matters 4/4]...
+  ERROR: Client error '401 Unauthorized' for url 'https://openrouter.ai/api/v1/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+
+======================================================================
+STEP E: EMBEDDING ENDPOINT TEST
+======================================================================
+
+Testing voyage-3 on /v1/embeddings...
+  FAIL: 401 {"error":{"message":"Missing Authentication header","code":401}}
+
+Trying fallback 1: voyage-3...
+  FALLBACK 1 FAIL: 401 {"error":{"message":"Missing Authentication header","code":401}}
+
+Trying fallback 2: openai/text-embedding-3-large...
+  ALL EMBEDDING FALLBACKS FAILED — escalate to separate embedding provider decision
+
+======================================================================
+SUMMARY
+======================================================================
+Tasks completed: 0/14
+Errors: 14
+Cumulative OpenRouter spend: $0.00000 (cap: $20 / abort: $18)
+Findings: 2
+  [F-MODEL-EMBEDDING] D-18 starter 'cohere/embed-multilingual-v3.0' not in /v1/models; using fallback 'voyage-3'
+  [F-EMBED-BLOCKED] All 3 embedding options failed on OpenRouter /v1/embeddings. Separate provider decision needed.
+
+[NEXT] Review outputs above and fill in quality judgment in 00-MODEL-EVALUATION-RESULTS.md

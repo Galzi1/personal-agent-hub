@@ -1,7 +1,4 @@
 # MicroClaw configuration
-# D-19: Relocated from repo root to config/ per Plan 00-02.
-# D-20: OpenRouter API key stored here alongside Discord bot token and LLM key.
-# THIS FILE IS GITIGNORED — do not commit secrets.
 
 # Channel settings (set `enabled: false` to keep credentials without activating the channel)
 # setup wizard default: web when no channels are selected
@@ -52,10 +49,12 @@ model: "claude-sonnet-4-5-20250929"
 # Show model thinking/reasoning text when available
 show_thinking: false
 # OpenAI-compatible request body overrides (optional)
+# Use null to unset a default key for selected provider/model.
 # openai_compat_body_overrides: { temperature: 0.2 }
-
-# OpenRouter API key — used by Python spike and future application code (D-20)
-openrouter_api_key: ""
+# openai_compat_body_overrides_by_provider:
+#   deepseek: { top_p: null, reasoning_effort: "high" }
+# openai_compat_body_overrides_by_model:
+#   gpt-5.2: { response_format: { type: "json_object" } }
 
 data_dir: "C:\\Users\\galzi\\.microclaw"
 working_dir: "C:\\Users\\galzi\\.microclaw\\working_dir"
@@ -84,3 +83,4 @@ web_fetch_url_validation:
 
 # Optional SOUL files directory (defaults to <data_dir>/souls)
 souls_dir: "C:\\Users\\galzi\\.microclaw\\souls"
+openrouter_api_key: "sk-ore-AAABBBCCC"
