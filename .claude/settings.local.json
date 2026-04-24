@@ -5,7 +5,11 @@
       "WebFetch(domain:www.squid-club.com)",
       "Skill(gsd-quick)",
       "Bash(rtk git:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(powershell.exe *)",
+      "Bash(rtk ls *)",
+      "Bash(date -Iseconds)"
     ]
-  }
+  },
+  "prefersReducedMotion": true
 }

@@ -61,7 +61,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User receives a daily Discord message listing ingested items with source and title.
   2. End-to-end pipeline (schedule, ingest, format, deliver) is validated.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Define memory/story tables and deduplication pipeline
+- [ ] 02-02-PLAN.md — Integrate Cognee Knowledge Engine and Story Recall API
 
 ### Phase 2: Canonical Story Formation
 **Goal**: User gets one trustworthy story per underlying update, with uncertainty visible before stories are selected into the digest.
@@ -74,7 +78,11 @@ Plans:
 **Architecture notes**:
   - Introduce a `memory` table placeholder in SQLite alongside canonical stories - dedup/clustering benefits from remembering past story patterns, and Phase 4 memory promotion will extend this schema rather than retrofitting it.
   - Research `topoteretes/cognee` (knowledge graphs) and `vectorize-io/hindsight` (learning memory) during Phase 2 planning to inform the memory schema shape.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Define memory/story tables and deduplication pipeline
+- [ ] 02-02-PLAN.md — Integrate Cognee Knowledge Engine and Story Recall API
 
 ### Phase 3: Ranked Discord Digest
 **Goal**: User receives a short, relevant, topic-aware daily digest in Discord that explains why each selected story matters.
@@ -89,7 +97,11 @@ Plans:
 **Architecture notes**:
   - Formalize observability metrics during this phase: ingestion latency, source success rate, dedup compression ratio, ranking confidence distribution. These feed the Control Panel's Activity view from the architecture diagram.
   - Keep agent system prompts minimal - use examples and memory for calibration, not instruction bloat (lesson from Squid Club multi-agent article).
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Define memory/story tables and deduplication pipeline
+- [ ] 02-02-PLAN.md — Integrate Cognee Knowledge Engine and Story Recall API
 
 ### Phase 4: Feedback & Suppression
 **Goal**: User can calibrate future digests directly by suppressing noise and marking which items were useful.
@@ -104,7 +116,11 @@ Plans:
   - Save positive feedback alongside corrections - agents that only learn from mistakes become overly cautious (lesson from Squid Club multi-agent article).
   - Extend the Phase 2 memory schema placeholder with promotion rules: logs → durable memory requires explicit validation, not automatic promotion.
   - Research `topoteretes/cognee` and `vectorize-io/hindsight` for memory engine options beyond raw SQLite.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Define memory/story tables and deduplication pipeline
+- [ ] 02-02-PLAN.md — Integrate Cognee Knowledge Engine and Story Recall API
 
 ## Progress
 
