@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-04-11)
 
 Phase: 00 (validation-spikes) - EXECUTING
 Plan: 2 of 3
-Status: Plan 00-01 GO; ready to execute Plan 00-02 (Ollama evaluation)
+Status: Plan 00-01 GO; Plan 00-02 (OpenRouter evaluation) pending rewrite then execute
 Last activity: 2026-04-23 -- Plan 00-01 MicroClaw spike GO (R1 closed)
 
-Note: Phase 0 validation spikes (MicroClaw, Ollama quality, watchlist backtest) should complete before Phase 1 implementation begins. See .planning/RISK-REVIEW.md.
+Note: Phase 0 validation spikes (MicroClaw, OpenRouter model quality, watchlist backtest) should complete before Phase 1 implementation begins. See .planning/RISK-REVIEW.md.
 
 Progress: [███░░░░░░░] 33%
 
@@ -72,7 +72,7 @@ Top risks actively tracked:
 
 - **R1 (Critical):** MicroClaw may prove insufficient - **CLOSED 2026-04-23** via Plan 00-01 GO (all 4 smoke tests PASS; see 00-01-SPIKE-RESULTS.md)
 - **R2 (High):** Long time to first useful digest - thin digest milestone in Phase 1.5
-- **R3 (High):** Ollama model quality unverified - evaluation spike in Phase 0 (Plan 00-02, in progress)
+- **R3 (High):** OpenRouter-hosted model quality unverified - evaluation spike in Phase 0 (Plan 00-02, pending rewrite then execute; per-task starters from D-18)
 
 Additional concerns:
 
@@ -89,9 +89,9 @@ None yet.
 
 - Need the exact Discord feedback UX decided before Phase 4 execution.
 - Need the exact starter source allowlist chosen during Phase 1 planning.
-- MicroClaw Discord adapter requires @-mention routing for inbound flows (F1 in 00-01-SPIKE-RESULTS); Phase 1 bot-receiver flows must design around this or confirm a DM-only / prefix-based alternative.
-- Ollama model quality must meet minimum thresholds before Phase 2 planning (R3).
-- Available RAM was 6.4 GB at Plan 01 setup; close background apps before first `ollama run qwen3:32b` to avoid swap thrashing during Plan 02.
+- MicroClaw Discord adapter requires @-mention routing for inbound flows (F1 in 00-01-SPIKE-RESULTS, locked as D-23); Phase 1 is daily-digest outbound-only per D-24, so F1 does not block Phase 1. Phase 2+ inbound flows must design around it.
+- OpenRouter-hosted model quality must meet minimum thresholds before Phase 2 planning (R3). Per-task starters (D-18) under $20 spend cap (D-22).
+- `config/models.yaml` and relocated `config/microclaw.config.yaml` are Plan 00-02 setup outputs (D-19, D-20, D-21) that later phases will consume.
 
 ### Quick Tasks Completed
 

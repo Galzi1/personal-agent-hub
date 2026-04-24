@@ -2,6 +2,7 @@
 
 **Domain:** personal AI-agent system for research and intelligence workflows  
 **Researched:** 2026-04-11  
+**Revised:** 2026-04-24 (OpenRouter pivot post Plan 00-01 GO; see Phase 0 CONTEXT.md D-13 through D-24)  
 **Confidence:** MEDIUM
 
 ## Recommended Architecture
@@ -10,7 +11,7 @@ For this product, v1 should be structured as a **workflow-oriented local monolit
 
 That means:
 
-- **One runtime core** on Windows (MicroClaw + Ollama)  
+- **One runtime core** on Windows (MicroClaw + OpenRouter for LLM/embeddings via per-task model config)  
 - **One primary orchestrated workflow** for the daily AI-news digest  
 - **A small set of bounded specialist components** for intake, deduplication, ranking, composition, and delivery  
 - **An append-only audit/event trail** so Discord-visible routing and control-panel traces both come from the same source of truth
@@ -44,7 +45,7 @@ So the architecture should optimize first for **signal quality, repeatability, a
 │                         Shared Infrastructure                       │
 ├────────────────────────────────────────────────────────────────────┤
 │ Raw item store │ Canonical story store │ Run/event log │ Memory    │
-│ Ollama LLM/embeddings │ Files/config │ Metrics/logs              │
+│ OpenRouter LLM/embeddings (per-task config) │ Files/config │ Logs │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,9 +60,9 @@ So the architecture should optimize first for **signal quality, repeatability, a
 | Routing/policy layer | Decides what becomes chat-visible and prevents noisy handoff spam | Orchestrator, Discord adapter, control panel |
 | Source intake | Pulls from RSS/APIs/web sources and stores raw items | External sources, raw item store |
 | Normalizer | Converts source-specific items into one article/story candidate schema | Raw item store, canonical story store |
-| Dedup/cluster service | Collapses repeated coverage into one canonical story | Canonical story store, Ollama embeddings if needed |
-| Rank/filter service | Scores relevance for the user and removes low-signal stories | Canonical story store, memory, Ollama |
-| Digest composer | Produces the final daily digest with sections, summaries, and links | Ranked stories, Ollama, Discord adapter |
+| Dedup/cluster service | Collapses repeated coverage into one canonical story | Canonical story store, OpenRouter embeddings (per-task `embedding` model, e.g. `cohere/embed-multilingual-v3.0`) |
+| Rank/filter service | Scores relevance for the user and removes low-signal stories | Canonical story store, memory, OpenRouter (per-task `ranking` model) |
+| Digest composer | Produces the final daily digest with sections, summaries, and links | Ranked stories, OpenRouter (per-task `summarization` and `why_it_matters` models), Discord adapter |
 | Feedback handler | Captures “more/less like this,” missed stories, corrections | Discord adapter, memory promotion |
 | Memory promotion | Promotes validated preferences/patterns into layered memory | Memory stores, control panel |
 | Event/audit log | Append-only record of every run, decision, handoff, and failure | All components |
@@ -239,8 +240,8 @@ Recommended write policy:
 The build order should mirror the actual risk.
 
 ### Phase 1: Runtime Skeleton and Traceability
-- MicroClaw + Ollama wiring
-- Discord adapter for outbound messages
+- MicroClaw + OpenRouter wiring (loads `config/models.yaml` at startup; per-task model client via `httpx`)
+- Discord adapter for outbound messages (outbound-only per D-24; @-mention routing contract D-23 applies when inbound lands in Phase 2+)
 - run IDs, event log, basic control-panel visibility
 - manual trigger for one digest run
 
@@ -305,7 +306,7 @@ Examples of future workflows that fit this structure:
 |---------|-------------------|---------------------|----------------|
 | Orchestration | Single local orchestrator | Add queued jobs per workflow | Split workers only when contention appears |
 | Storage | SQLite is fine | Partition raw items vs stories vs events | Move hot paths to stronger DB only if needed |
-| LLM cost/latency | Local Ollama acceptable | Cache intermediate judgments | Introduce model routing if workloads multiply |
+| LLM cost/latency | OpenRouter per-task models acceptable (~$0.30 for a full Phase 0 eval) | Cache intermediate judgments; swap task models in `config/models.yaml` | Introduce provider-level routing if workloads multiply or pricing shifts |
 | Control panel | Simple run browser | Add filters, diff views, replay | Separate observability backend only later |
 
 What breaks first is unlikely to be “number of agents.”  
@@ -332,7 +333,7 @@ src/
 │   └── memory/            # layered memory + promotion policy
 ├── infrastructure/
 │   ├── microclaw/         # runtime integration
-│   ├── ollama/            # model gateway, prompts, embeddings
+│   ├── openrouter/        # per-task model gateway, prompt builders, embedding client (reads config/models.yaml)
 │   ├── persistence/       # SQLite stores, files, repositories
 │   ├── discord/           # delivery adapter, command handling
 │   └── observability/     # event log, traces, metrics
@@ -356,10 +357,11 @@ It also leaves a clean path to expand into research workflows without rewriting 
 
 ## Sources
 
-- `C:\Users\galzi\src\personal-agent-hub\.planning\PROJECT.md` — project scope and constraints
-- `C:\Users\galzi\src\personal-agent-hub\.planning\diagrams\architecture-diagram.mmd` — current direction being stress-tested
-- `C:\Users\galzi\src\personal-agent-hub\.planning\notes\architecture-repository-mapping.md` — MicroClaw-based component mapping
-- `C:\Users\galzi\src\personal-agent-hub\.planning\notes\layered-memory-model.md` — current memory direction
-- `C:\Users\galzi\src\personal-agent-hub\.planning\notes\visible-routing-architecture.md` — routing visibility direction
-- MicroClaw README — channel-agnostic runtime, persistent memory, scheduled tasks, web control plane (official repo snapshot fetched 2026-04-11)
-- Ollama API docs — local chat/generate/embeddings API surface (official docs snapshot fetched 2026-04-11)
+- `C:\Users\galzi\src\personal-agent-hub\.planning\PROJECT.md` - project scope and constraints
+- `C:\Users\galzi\src\personal-agent-hub\.planning\diagrams\architecture-diagram.mmd` - current direction being stress-tested
+- `C:\Users\galzi\src\personal-agent-hub\.planning\notes\architecture-repository-mapping.md` - MicroClaw-based component mapping
+- `C:\Users\galzi\src\personal-agent-hub\.planning\notes\layered-memory-model.md` - current memory direction
+- `C:\Users\galzi\src\personal-agent-hub\.planning\notes\visible-routing-architecture.md` - routing visibility direction
+- MicroClaw README - channel-agnostic runtime, persistent memory, scheduled tasks, web control plane (official repo snapshot fetched 2026-04-11; smoke-tested 2026-04-23 per Plan 00-01)
+- OpenRouter API docs - https://openrouter.ai/docs - `/v1/chat/completions` (OpenAI-compatible), `/v1/embeddings`, per-model pricing, Bearer auth (source for revised LLM layer 2026-04-24)
+- Phase 0 CONTEXT.md - D-13 through D-22 define the OpenRouter pivot, per-task model selection (D-18), config folder layout (D-19), and Plan 00-02 $20 spend cap (D-22)

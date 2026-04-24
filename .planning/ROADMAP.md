@@ -14,7 +14,7 @@ This roadmap delivers one explicit daily AI-intelligence workflow from end to en
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 0: Validation Spikes** - De-risk critical assumptions before committing to implementation.
+- [ ] **Phase 0: Validation Spikes** - De-risk critical assumptions before committing to implementation. *(Plan 00-01 COMPLETE; Plans 00-02 and 00-03 pending.)*
 - [ ] **Phase 1: Ingestion Foundation & Run Visibility** - Establish curated intake and make each daily digest run observable.
 - [ ] **Phase 1.5: Thin Digest** - Deliver a minimal daily digest to Discord to close the time-to-value gap.
 - [ ] **Phase 2: Canonical Story Formation** - Collapse overlapping coverage into trustworthy story records with visible confidence.
@@ -24,19 +24,19 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 0: Validation Spikes
-**Goal**: Validate that MicroClaw, Ollama, and the starter watchlist are sufficient for v1 before writing application code.
+**Goal**: Validate that MicroClaw, OpenRouter, and the starter watchlist are sufficient for v1 before writing application code.
 **Depends on**: Nothing
 **Requirements**: None (risk mitigation, not feature delivery)
 **Success Criteria** (what must be TRUE):
   1. MicroClaw spike confirms scheduler, Discord posting, and SQLite persistence work on Windows (R1).
-  2. Ollama model evaluation on 10-20 representative ranking/summarization tasks meets minimum quality bar (R3).
+  2. OpenRouter API evaluation on 10-20 representative ranking/summarization tasks meets minimum quality bar (R3).
   3. Watchlist backtest against one real week of AI news shows acceptable coverage (R4).
 **Plans**: 3 plans
 
 Plans:
-- [ ] 00-01-PLAN.md — Install MicroClaw + Ollama, smoke-test 4 critical capabilities (scheduler, Discord, SQLite, control panel), record go/no-go.
-- [ ] 00-02-PLAN.md — Pull Ollama model (~32B), evaluate 10-15 ranking/summarization/explanation tasks, record quality go/no-go.
-- [ ] 00-03-PLAN.md — Fetch 9 starter RSS feeds, collect recent items, user reviews coverage against real AI news week.
+- [x] 00-01-PLAN.md - Install MicroClaw, smoke-test 4 critical capabilities (scheduler, Discord, SQLite, control panel), record go/no-go. **COMPLETE 2026-04-23 - GO.**
+- [ ] 00-02-PLAN.md - Evaluate OpenRouter per-task starter models (Gemini 3 Flash Preview / Nemotron 3 Super / GPT-5.4 / Cohere embed-v3.0) on 10-15 ranking/summarization/explanation tasks under a $20 spend cap; produce `config/models.yaml`; record quality go/no-go.
+- [ ] 00-03-PLAN.md - Fetch 9 starter RSS feeds, collect recent items, user reviews coverage against real AI news week.
 
 ### Phase 1: Ingestion Foundation & Run Visibility
 **Goal**: User can rely on a local-first daily digest workflow that gathers candidate updates from a curated watchlist and makes each run outcome visible.
@@ -49,15 +49,15 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Bootstrap the empty repo with uv/pytest, local-only MicroClaw templates, and the shared Phase 1 test harness.
-- [ ] 01-02-PLAN.md — Define the trusted local watchlist, fixture-backed SRC-01 tests, and allowlisted multi-source raw-item ingestion.
-- [ ] 01-03-PLAN.md — Implement run IDs, retry/rerun lineage, append-only events, and the exact raw-event trace route.
-- [ ] 01-04-PLAN.md — Wire the end-to-end Phase 1 workflow, prove the live MicroClaw + Ollama runtime, add three separate Discord milestone posts, and register the 08:00 schedule.
+- [ ] 01-01-PLAN.md - Bootstrap the empty repo with uv/pytest, local-only MicroClaw templates, and the shared Phase 1 test harness.
+- [ ] 01-02-PLAN.md - Define the trusted local watchlist, fixture-backed SRC-01 tests, and allowlisted multi-source raw-item ingestion.
+- [ ] 01-03-PLAN.md - Implement run IDs, retry/rerun lineage, append-only events, and the exact raw-event trace route.
+- [ ] 01-04-PLAN.md - Wire the end-to-end Phase 1 workflow, prove the live MicroClaw + OpenRouter runtime, add three separate Discord milestone posts, and register the 08:00 schedule.
 
 ### Phase 1.5: Thin Digest
 **Goal**: Post a simple formatted list of ingested items to Discord daily, giving the user a tangible artifact before dedup and ranking exist.
 **Depends on**: Phase 1
-**Requirements**: None (risk mitigation for R2 — early value delivery)
+**Requirements**: None (risk mitigation for R2 - early value delivery)
 **Success Criteria** (what must be TRUE):
   1. User receives a daily Discord message listing ingested items with source and title.
   2. End-to-end pipeline (schedule, ingest, format, deliver) is validated.
@@ -72,7 +72,7 @@ Plans:
   2. User does not see the same underlying update repeated as separate stories after duplicate coverage is collapsed.
   3. User can distinguish confirmed updates from uncertain or disputed items.
 **Architecture notes**:
-  - Introduce a `memory` table placeholder in SQLite alongside canonical stories — dedup/clustering benefits from remembering past story patterns, and Phase 4 memory promotion will extend this schema rather than retrofitting it.
+  - Introduce a `memory` table placeholder in SQLite alongside canonical stories - dedup/clustering benefits from remembering past story patterns, and Phase 4 memory promotion will extend this schema rather than retrofitting it.
   - Research `topoteretes/cognee` (knowledge graphs) and `vectorize-io/hindsight` (learning memory) during Phase 2 planning to inform the memory schema shape.
 **Plans**: TBD
 
@@ -88,7 +88,7 @@ Plans:
   5. User can define tracked topics that influence what appears in the digest.
 **Architecture notes**:
   - Formalize observability metrics during this phase: ingestion latency, source success rate, dedup compression ratio, ranking confidence distribution. These feed the Control Panel's Activity view from the architecture diagram.
-  - Keep agent system prompts minimal — use examples and memory for calibration, not instruction bloat (lesson from Squid Club multi-agent article).
+  - Keep agent system prompts minimal - use examples and memory for calibration, not instruction bloat (lesson from Squid Club multi-agent article).
 **Plans**: TBD
 
 ### Phase 4: Feedback & Suppression
@@ -101,7 +101,7 @@ Plans:
   3. User can mark a digest item as more useful or less useful with simple feedback controls.
   4. User can observe later digests reflecting those mute and usefulness signals.
 **Architecture notes**:
-  - Save positive feedback alongside corrections — agents that only learn from mistakes become overly cautious (lesson from Squid Club multi-agent article).
+  - Save positive feedback alongside corrections - agents that only learn from mistakes become overly cautious (lesson from Squid Club multi-agent article).
   - Extend the Phase 2 memory schema placeholder with promotion rules: logs → durable memory requires explicit validation, not automatic promotion.
   - Research `topoteretes/cognee` and `vectorize-io/hindsight` for memory engine options beyond raw SQLite.
 **Plans**: TBD
@@ -113,7 +113,7 @@ Phases execute in numeric order: 0 → 1 → 1.5 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Validation Spikes | 0/3 | Not started | - |
+| 0. Validation Spikes | 1/3 | In progress | - |
 | 1. Ingestion Foundation & Run Visibility | 0/4 | Not started | - |
 | 1.5. Thin Digest | 0/TBD | Not started | - |
 | 2. Canonical Story Formation | 0/TBD | Not started | - |
@@ -125,6 +125,6 @@ Phases execute in numeric order: 0 → 1 → 1.5 → 2 → 3 → 4
 See `.planning/RISK-REVIEW.md` for the full risk register (R1-R10), assumption analysis, and recommended actions.
 
 **Top risks informing roadmap structure:**
-- **R1 (Critical):** MicroClaw proves insufficient — mitigated by Phase 0 validation spike
-- **R2 (High):** Long time to first useful digest — mitigated by Phase 1.5 thin digest milestone
-- **R3 (High):** Local Ollama model quality insufficient — mitigated by Phase 0 evaluation spike
+- ~~**R1 (Critical):** MicroClaw proves insufficient~~ - **CLOSED 2026-04-23** via Plan 00-01 GO
+- **R2 (High):** Long time to first useful digest - mitigated by Phase 1.5 thin digest milestone
+- **R3 (High):** OpenRouter-hosted model quality unverified - mitigated by Phase 0 Plan 00-02 evaluation (per-task starters from D-18)
