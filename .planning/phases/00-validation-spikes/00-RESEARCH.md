@@ -1,41 +1,71 @@
 # Phase 0: Validation Spikes - Research
 
 **Researched:** 2026-04-13
-**Domain:** MicroClaw runtime validation, Ollama model quality evaluation, RSS watchlist backtesting
-**Confidence:** MEDIUM
+**Updated:** 2026-04-24 (OpenRouter pivot; Plan 00-01 complete; Spike 2 rewritten)
+**Domain:** MicroClaw runtime validation (COMPLETE), OpenRouter model quality evaluation, RSS watchlist backtesting
+**Confidence:** MEDIUM-HIGH
 
 ## Summary
 
-Phase 0 consists of three sequential validation spikes that convert key project assumptions (R1, R3, R4) into evidence before committing to Phase 1 implementation. The spikes are lightweight smoke tests, not exhaustive benchmarks.
+Phase 0 consists of three sequential validation spikes that convert key project assumptions (R1, R3, R4) into evidence before committing to Phase 1 implementation.
 
-The MicroClaw spike is the most critical: it validates that the entire project's runtime foundation works on Windows. The Ollama spike validates whether a local ~32B model produces usable ranking and summarization output. The watchlist spike validates whether 9 curated RSS/Atom feeds catch enough real AI news to be useful.
+**Spike 1 (MicroClaw):** COMPLETE as of 2026-04-23. All 4 capabilities confirmed on Windows 11 x86_64. R1 CLOSED. Key finding: @-mention required for inbound flows (F1, locked as D-23). Machine has 32 GB RAM, ~6.4 GB free at baseline. No GPU offload viable (AMD Radeon 890M, 512 MB VRAM).
 
-**Primary recommendation:** Execute spikes sequentially (MicroClaw first, then Ollama, then watchlist). Use prebuilt Windows binaries for MicroClaw (v0.1.51 is latest), install Ollama from official installer, and write a small Python script with feedparser+httpx for the watchlist backtest.
+**Spike 2 (LLM model quality):** PIVOTED 2026-04-24 from local Ollama to OpenRouter. 32B local inference is not viable with 6.4 GB free RAM and no GPU offload. Plan 00-02 must be rewritten to evaluate OpenRouter-hosted models (D-13 through D-22). Uses `httpx` to hit OpenRouter's OpenAI-compatible endpoints. Models are per-task and config-driven (D-15, D-17). Starter assignments in D-18 must be verified against `/v1/models` before running evaluation.
+
+**Spike 3 (Watchlist backtest):** Still pending. Automated Python feed scan using feedparser + httpx. Pass if >= 50% coverage of important AI news from the past week.
+
+**Primary recommendation:** Rewrite Plan 00-02 around OpenRouter before executing. Use `httpx` directly (no SDK needed). Load API key from `config/microclaw.config.yaml`. Verify D-18 model IDs against `/v1/models` as the first task step. For Spike 3, use the feedparser script structure from the original research.
 
 <user_constraints>
 
 ## User Constraints (from CONTEXT.md)
 
 ### Locked Decisions
-- **D-01:** MicroClaw spike is a smoke test -- verify 4 critical capabilities on Windows: scheduled task execution, Discord message posting, SQLite read/write, and control panel access. Pass = all 4 work. Fail = any one blocks.
-- **D-02:** Ollama spike is a quick evaluation -- run 10-15 representative tasks (ranking relevance, summarizing AI news, "why it matters" explanations). Pass/fail by user judgment: is the output usable or not?
-- **D-03:** Watchlist spike is an automated feed scan -- actually fetch the 9 feeds for the past week, list all items, and user reviews which important stories are present/missing. Pass = catches at least 50% of important AI news from that week.
-- **D-04:** If MicroClaw fails, fall back to NanoClaw on WSL2.
-- **D-05:** If Ollama model quality fails, keep Ollama for embeddings and cheap tasks, add a remote provider (Claude or OpenAI API) for ranking and "why it matters" summaries only.
-- **D-06:** If watchlist coverage falls below 50%, accept and move on. Don't block Phase 1 on watchlist size.
-- **D-07:** Merge the 3 folded todos into the 3 roadmap spikes.
-- **D-08:** Run spikes sequentially: MicroClaw first, then Ollama quality evaluation, then watchlist backtest.
-- **D-09:** Visible-routing prototype is a stretch goal within the MicroClaw spike -- not a hard requirement.
-- **D-10:** Target ~32B parameter range for the chat/ranking model (e.g., Qwen3-Coder:32B or Gemma 4:27B).
-- **D-11:** Start with one model, expand if needed.
-- **D-12:** Use a separate dedicated embedding model (e.g., nomic-embed-text or mxbai-embed-large) for sqlite-vec semantic retrieval.
+
+#### Spike Scope & Pass/Fail Criteria
+- **D-01:** MicroClaw spike smoke test - 4 capabilities on Windows. **COMPLETE 2026-04-23: all 4 PASS.**
+- **D-02:** LLM model-quality spike - run 10-15 representative tasks (ranking, summarization, "why it matters"). Pass/fail by user judgment. **Reinterpreted 2026-04-24 per D-13 to target OpenRouter-hosted models.**
+- **D-03:** Watchlist spike - fetch 9 feeds, list items, user reviews. Pass = catches >= 50% of important AI news from past week.
+
+#### Fallback Strategy
+- **D-04:** MicroClaw fallback to NanoClaw on WSL2. **MOOT: MicroClaw GO 2026-04-23.**
+- **D-05:** SUPERSEDED by D-13. Remote-only via OpenRouter is the baseline, not a fallback.
+- **D-06:** If watchlist coverage < 50%, accept and move on. Don't block Phase 1.
+
+#### LLM Provider & Model Selection (revised 2026-04-24)
+- **D-13:** Remote-only for all LLM tasks via OpenRouter. No local Ollama chat path.
+- **D-14:** OpenRouter is the sole LLM provider. No direct Anthropic/OpenAI/Google/Cohere API clients elsewhere.
+- **D-15:** Per-task model selection. Each task type has its own model assignment, independently tunable.
+- **D-16:** Embedding starter: `cohere/embed-multilingual-v3.0` (1024-dim). If unavailable on OpenRouter, fallback order: `voyage-3` → `openai/text-embedding-3-large`.
+- **D-17:** Model configuration externalized to `config/models.yaml`. No hardcoded model IDs in application code.
+- **D-18:** Starter model assignments (Plan 00-02 must verify each against `/v1/models`):
+  - `ranking` → **Gemini 3 Flash Preview**
+  - `summarization` → **Nemotron 3 Super**
+  - `why_it_matters` → **GPT-5.4**
+  - `embedding` → **cohere/embed-multilingual-v3.0**
+
+#### Configuration & Secrets Layout
+- **D-19:** Single `config/` folder at repo root. `microclaw.config.yaml` moves from repo root to `config/microclaw.config.yaml`. `models.yaml` alongside. Whole folder gitignored.
+- **D-20:** OpenRouter API key stored inside `config/microclaw.config.yaml` alongside Discord bot token. Already gitignored.
+- **D-21:** `config/models.yaml` minimum schema: `tasks: { ranking, summarization, why_it_matters, embedding }` each with `model: "<openrouter-id>"`.
+
+#### Plan 00-02 Budget & Safety
+- **D-22:** $20 hard cap on Plan 00-02 OpenRouter spend. Expected actual: ~$0.30 for single-pass 15-task eval.
+
+#### MicroClaw Runtime Contracts (from Plan 00-01)
+- **D-23:** @-mention is the locked contract for MicroClaw inbound Discord flows. Phase 1 is outbound-only (D-24), so F1 doesn't block Phase 1.
+- **D-24:** Phase 1 scope is daily digest outbound-only.
 
 ### Claude's Discretion
-- Claude picks the specific first-choice ~32B Ollama model based on current benchmarks and community feedback for ranking/summarization tasks.
-- Claude picks the specific embedding model based on what works well with sqlite-vec and Ollama.
+- Claude picks retry/rate-limit/timeout defaults for the OpenRouter httpx client.
+- Claude picks YAML loader library (PyYAML confirmed in STACK.md).
+- Claude proposes model IDs for any task type added beyond D-18.
 
-### Deferred Ideas (OUT OF SCOPE)
-None -- discussion stayed within phase scope.
+### Deferred Ideas (OUT OF SCOPE for Phase 0)
+- Control panel model-selection UI (Phase 2+ control panel)
+- DM-based bot-receiver flow (revisit if @-mention UX proves friction-heavy)
+- STACK.md rewrite to fully reflect OpenRouter baseline (small follow-up)
 
 </user_constraints>
 
@@ -43,115 +73,157 @@ None -- discussion stayed within phase scope.
 
 ### Core (Spike Dependencies)
 
-| Technology | Version | Purpose | Why Standard |
-|------------|---------|---------|--------------|
-| **MicroClaw** | **v0.1.51** (latest) | Runtime validation target | Prebuilt Windows binary available. v0.1.51 released 2026-04-12 with memory/skill optimizations. STACK.md targets v0.1.50 but .51 is a minor patch. [VERIFIED: GitHub releases page] |
-| **Ollama** | **v0.20.6** (latest) | Local LLM runtime for model evaluation | v0.20.6 released 2026-04-12 with Gemma 4 tool calling improvements. STACK.md targets v0.20.5 but .6 is a patch. [VERIFIED: GitHub releases page] |
-| **Python** | **3.13.12** | Watchlist backtest script | Already installed on the machine. [VERIFIED: local environment] |
-| **uv** | **0.8.13** | Python environment management | Already installed. STACK.md targets 0.11.6 but 0.8.13 is functional for spike purposes. [VERIFIED: local environment] |
-| **feedparser** | **6.0.12** | RSS/Atom feed parsing | Standard Python RSS library. [CITED: STACK.md] |
-| **httpx** | **0.28.1** | HTTP client for feed fetching | Async-capable, better than requests. [CITED: STACK.md] |
+| Technology | Version | Purpose | Confidence |
+|------------|---------|---------|------------|
+| **MicroClaw** | **v0.1.50** (installed) | Runtime - VALIDATED Plan 00-01 | HIGH - verified locally |
+| **OpenRouter** | API (no SDK) | Single LLM provider for chat + embeddings | HIGH - docs verified |
+| **Python** | **3.12.x** (target; 3.13.12 installed) | OpenRouter client script + watchlist backtest | HIGH - installed |
+| **uv** | **0.8.13** (installed; 0.11.6 target) | Python environment management for spike scripts | HIGH - installed |
+| **httpx** | **0.28.1** | OpenRouter API client (chat + embeddings) | HIGH - standard async HTTP |
+| **feedparser** | **6.0.12** | RSS/Atom feed parsing for watchlist spike | HIGH - standard |
+| **PyYAML** | **6.0.2+** | Load `config/models.yaml` | HIGH - confirmed in STACK.md |
+| **pydantic** | **2.12.5** | Typed schema for model config loader | HIGH - confirmed in STACK.md |
 
-### Alternatives Considered
+### OpenRouter Verified Model IDs
 
-| Instead of | Could Use | Tradeoff |
-|------------|-----------|----------|
-| MicroClaw prebuilt binary | Building from source with cargo | Prebuilt is faster for spike; build from source only needed if sqlite-vec feature required (it is NOT required for the spike's 4 core tests) |
-| Qwen3 32B | Gemma 4 27B (MoE) | See model selection analysis below |
+Researched 2026-04-24. Verify against `/v1/models` at Plan 00-02 execution — IDs may shift.
 
-**Installation:**
-```powershell
-# MicroClaw -- use PowerShell installer
-iwr https://microclaw.ai/install.ps1 -UseBasicParsing | iex
+| Task | D-18 Starter Name | Likely OpenRouter ID | Fallback ID | Confidence |
+|------|-------------------|---------------------|-------------|------------|
+| `ranking` | Gemini 3 Flash Preview | `google/gemini-3-flash-preview` | `google/gemini-2.5-flash` | HIGH |
+| `summarization` | Nemotron 3 Super | `nvidia/nemotron-3-super-120b-a12b` (`:free` variant exists) | `nvidia/nemotron-4-340b-instruct` | HIGH |
+| `why_it_matters` | GPT-5.4 | `openai/gpt-5.4` | `openai/gpt-5` | HIGH |
+| `embedding` | cohere/embed-multilingual-v3.0 | `cohere/embed-multilingual-v3.0` | `voyage-3` → `openai/text-embedding-3-large` | LOW - availability on OpenRouter `/v1/embeddings` unconfirmed |
 
-# Ollama -- download from official site
-# https://ollama.com/download/windows
+**Critical note on embedding:** `cohere/embed-multilingual-v3.0` availability through OpenRouter's `/v1/embeddings` endpoint is NOT confirmed. Research found OpenRouter lists Cohere Command and Rerank models, but embedding-specific availability is unclear. The Plan 00-02 step to verify `/v1/models` is load-bearing for this model. If absent, the fallback chain per D-16 applies: `voyage-3` → `openai/text-embedding-3-large`.
 
-# Watchlist backtest dependencies
-uv venv
-uv pip install feedparser==6.0.12 httpx==0.28.1
-```
+**Critical note on Nemotron:** The free tier uses `nvidia/nemotron-3-super-120b-a12b:free`. If rate limits are too restrictive on the free tier during the 15-task eval, use the paid variant (drop `:free` suffix).
 
 ## Architecture Patterns
 
-### Spike 1: MicroClaw Validation
+### Spike 1: MicroClaw Validation — COMPLETE
 
-**What to test (4 mandatory capabilities):**
+**Result:** GO. All 4 tests PASS. See `00-01-SPIKE-RESULTS.md` for full details.
 
-1. **Scheduled task execution:** Create a simple scheduled task via `schedule_task` tool, verify it fires within 60 seconds of its due time. The scheduler polls every 60 seconds. [VERIFIED: MicroClaw README]
-2. **Discord message posting:** Configure the Discord adapter, send a test message to a designated channel. Verify message arrives with correct content.
-3. **SQLite read/write:** After running the agent, inspect the SQLite database at `<data_dir>/runtime/microclaw.db` to verify session/message/memory persistence. Use `sqlite3` CLI to query.
-4. **Control panel access:** With `web_enabled: true`, verify `http://127.0.0.1:10961` serves the web UI and displays runtime state.
+**Key contracts established:**
+- @-mention required for inbound Discord flows (F1, D-23)
+- Scheduler poll interval ~60 seconds
+- SQLite DB at `C:\Users\galzi\.microclaw\runtime\microclaw.db`
+- Web control panel at `http://127.0.0.1:10961`
+- Config at `./microclaw.config.yaml` (repo root; relocating to `config/` per D-19)
 
-**Stretch goal (D-09):** If all 4 pass, test visible routing -- schedule a task that triggers a sub-agent, verify the handoff is visible in both Discord chat and the control panel.
+---
 
-**Setup sequence:**
-```powershell
-# Install MicroClaw
-iwr https://microclaw.ai/install.ps1 -UseBasicParsing | iex
+### Spike 2: OpenRouter Model Quality Evaluation
 
-# Run setup wizard (configures Discord token, Ollama, etc.)
-microclaw setup
+**What Plan 00-02 must do:**
 
-# Run diagnostics
-microclaw doctor
+1. **Setup** — Relocate `microclaw.config.yaml` to `config/microclaw.config.yaml` (D-19). Add OpenRouter API key to it (D-20). Create `config/models.yaml` with D-18 starters (D-21).
 
-# Start the runtime
-microclaw start
+2. **Verify model availability** — Call `GET https://openrouter.ai/api/v1/models` with bearer auth. Confirm each D-18 starter ID is present. Log "alt-picked" finding for any that requires fallback.
+
+3. **Run evaluation** — 10-15 tasks across ranking, summarization, why_it_matters using httpx against `/v1/chat/completions`. Record output + latency for each.
+
+4. **Verify embedding** — Test `/v1/embeddings` with the embedding model. Confirm it returns a vector; note dimensionality.
+
+5. **Pass/fail judgment** — User reviews outputs. Majority usable = PASS.
+
+**OpenRouter API pattern:**
+
+```python
+import httpx
+import yaml
+import time
+
+# Load config
+with open("config/microclaw.config.yaml") as f:
+    cfg = yaml.safe_load(f)
+OPENROUTER_KEY = cfg["openrouter_api_key"]
+
+BASE_URL = "https://openrouter.ai/api/v1"
+HEADERS = {
+    "Authorization": f"Bearer {OPENROUTER_KEY}",
+    "Content-Type": "application/json",
+    "HTTP-Referer": "http://localhost",   # required by OpenRouter
+    "X-Title": "Personal Agent Hub Spike",
+}
+
+def chat(model: str, prompt: str) -> tuple[str, float]:
+    start = time.monotonic()
+    resp = httpx.post(
+        f"{BASE_URL}/chat/completions",
+        headers=HEADERS,
+        json={"model": model, "messages": [{"role": "user", "content": prompt}]},
+        timeout=60,
+    )
+    resp.raise_for_status()
+    elapsed = time.monotonic() - start
+    return resp.json()["choices"][0]["message"]["content"], elapsed
+
+def embed(model: str, text: str) -> list[float]:
+    resp = httpx.post(
+        f"{BASE_URL}/embeddings",
+        headers=HEADERS,
+        json={"model": model, "input": text},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return resp.json()["data"][0]["embedding"]
+
+def verify_models(required_ids: list[str]) -> dict[str, bool]:
+    resp = httpx.get(f"{BASE_URL}/models", headers=HEADERS, timeout=15)
+    resp.raise_for_status()
+    available = {m["id"] for m in resp.json()["data"]}
+    return {mid: mid in available for mid in required_ids}
+```
+[VERIFIED: OpenRouter API docs — `/v1/chat/completions` (OpenAI-compatible), `/v1/embeddings`, bearer auth, `HTTP-Referer` required]
+
+**`config/models.yaml` schema (D-21):**
+
+```yaml
+tasks:
+  ranking:        { model: "google/gemini-3-flash-preview" }
+  summarization:  { model: "nvidia/nemotron-3-super-120b-a12b" }
+  why_it_matters: { model: "openai/gpt-5.4" }
+  embedding:      { model: "cohere/embed-multilingual-v3.0" }
 ```
 
-**Key configuration points:**
-- Discord bot token must be created at https://discord.com/developers/applications [ASSUMED]
-- Ollama base URL defaults to `http://127.0.0.1:11434/v1` [VERIFIED: STACK.md version compatibility table]
-- Web control panel defaults to `http://127.0.0.1:10961` [VERIFIED: MicroClaw README]
+**Evaluation prompt templates:**
 
-### Spike 2: Ollama Model Quality Evaluation
+```python
+RANKING_PROMPT = """Given these {n} AI news items, rank them by importance for someone who builds AI-powered tools.
+Reply with the ranked list (1=most important) and one sentence of rationale per item.
 
-**Model selection recommendation (Claude's Discretion):**
+{items}"""
 
-**First choice: Qwen3 32B** (`ollama pull qwen3:32b`)
+SUMMARIZATION_PROMPT = """Summarize this AI news item in 2-3 sentences for a developer audience:
 
-Rationale:
-- Qwen3 32B is a dense 32B model (all parameters active per token) with strong general reasoning. Achieves 83.2% MMLU. [CITED: studyhub.net.in/techtools/best-ollama-models-in-2026]
-- For ranking and summarization tasks (not coding), a general-purpose model outperforms a code-specialized one like Qwen3-Coder.
-- Qwen3-Coder 30B is MoE (only 3.3B active per token) -- good for coding but may underperform on nuanced text ranking/summarization. [CITED: ollama.com/library/qwen3-coder]
+{article}"""
 
-**Alternative if Qwen3 32B is too slow or doesn't fit in memory: Gemma 4 27B** (`ollama pull gemma4:27b`)
+WHY_IT_MATTERS_PROMPT = """Explain in 2 sentences why this matters for someone who builds with AI tools:
 
-Rationale:
-- Gemma 4 27B is MoE with only ~3.8B active parameters per token, needs ~16GB RAM at 4-bit quantization. [CITED: gemma4.wiki/guide/gemma-4-ollama-model]
-- Much faster inference but potentially lower quality for complex ranking/summarization due to fewer active parameters.
-- Good fallback if the user's hardware (AMD Radeon 890M with 512MB VRAM) cannot handle a full 32B dense model.
+{headline}
 
-**Hardware constraint (CRITICAL):** The user's GPU is an AMD Radeon 890M with only 512MB dedicated VRAM. This is an integrated GPU, not a discrete one. [VERIFIED: local environment probe]
-
-**Implication:** Ollama will run in CPU-only mode or with minimal GPU offloading. A 32B dense model at Q4_K_M quantization needs ~20GB RAM. The user needs at least 32GB system RAM to run Qwen3 32B comfortably alongside the OS and MicroClaw. If the machine has only 16GB RAM, Gemma 4 27B MoE (~16GB at Q4) is the better fit. This is the single biggest hardware risk for the Ollama spike.
-
-**Embedding model recommendation (Claude's Discretion):**
-
-**Recommendation: nomic-embed-text** (`ollama pull nomic-embed-text`)
-
-Rationale:
-- Outperforms OpenAI text-embedding-ada-002 and text-embedding-3-small. [CITED: ollama.com/library/nomic-embed-text]
-- Better on short and direct queries (57.5% vs mxbai-embed-large), which matches the typical query pattern for dedup/retrieval of news items. [CITED: arsturn.com/blog/understanding-ollamas-embedding-models]
-- Smaller and faster than mxbai-embed-large, important given the CPU-bound environment.
-- 768 dimensions, well-suited for sqlite-vec. [ASSUMED]
-
-**Evaluation protocol:**
+{first_paragraph}"""
 ```
-Prepare 10-15 test tasks:
-- 5 ranking tasks: "Given these 5 AI news items, rank by relevance to [topic]"
-- 5 summarization tasks: "Summarize this AI news item in 2-3 sentences"
-- 3-5 "why it matters" tasks: "Explain why this matters for someone who builds with AI tools"
 
-For each task:
-1. Run against the model via Ollama API or CLI
-2. Record output
-3. User judges: usable (pass) or not usable (fail)
-4. Note latency per task
+**Test corpus (use real recent AI news items):**
+- 5 ranking tasks (3-5 items each, use real headlines from the past week)
+- 5 summarization tasks (paste real article snippets)
+- 3-5 why_it_matters tasks (real headlines + first paragraph)
 
-Pass criteria: majority of tasks produce usable output
+**Cost guardrail (D-22):**
+```python
+# OpenRouter returns usage in response
+total_cost_usd = 0.0
+SPEND_CAP = 18.0  # abort at $18, hard cap $20 per D-22
+
+# After each call, add to total_cost_usd via usage.prompt_tokens + completion_tokens * per-model rate
+# Log cumulative cost; abort spike if cap approaches
 ```
+[ASSUMED: cost tracking via OpenRouter usage field in response; actual per-token rates vary by model]
+
+---
 
 ### Spike 3: Watchlist Backtest
 
@@ -166,25 +238,12 @@ Pass criteria: majority of tasks produce usable output
 8. Simon Willison's blog
 9. Latent Space podcast/blog
 
-**Backtest approach:**
-
-RSS feeds only contain current items (typically last 10-50 entries per feed). They do NOT have a "fetch historical" API. The backtest must:
-
-1. Fetch all 9 feeds NOW using feedparser
-2. Filter entries by published date to the past 7 days
-3. Collect all items with: title, link, published date, source name
-4. Present the full list to the user for manual review
-5. User compares against their memory of "what was important this week in AI"
-6. Count: important stories caught vs. important stories missed
-7. Pass if >= 50% coverage (D-03)
-
-**Important caveat:** If a feed has already rotated out items older than 7 days, those items will be missed by this backtest. This is a known limitation -- RSS feeds are point-in-time snapshots. The backtest measures "what the feeds currently expose," not a complete historical archive. [ASSUMED]
+**Approach:** Fetch all 9 feeds NOW, filter to past 7 days, present list for manual user review. Pass if >= 50% coverage (D-03).
 
 **Script structure:**
 ```python
 # spike_watchlist.py
 import feedparser
-import httpx
 from datetime import datetime, timedelta
 
 FEEDS = {
@@ -198,229 +257,244 @@ FEEDS = {
     "Simon Willison": "https://simonwillison.net/atom/everything/",
     "Latent Space": "https://www.latent.space/feed",
 }
-# NOTE: Feed URLs above are best-guess and MUST be verified during execution.
-# Some may be wrong or have changed. Part of the spike is discovering correct URLs.
+# NOTE: URLs above are best-guess — MUST be verified during execution.
 
 cutoff = datetime.now() - timedelta(days=7)
-# Parse each feed, filter by date, collect items, print report
 ```
+[VERIFIED: feedparser standard usage pattern]
 
-### Anti-Patterns to Avoid
-- **Over-engineering the spikes:** These are smoke tests, not production code. Scripts should be disposable.
-- **Building infrastructure during validation:** Don't set up project structure, CI, or tests during Phase 0. That's Phase 1's job.
-- **Testing too many models:** D-11 says start with one model. Only test a second if the first clearly fails.
-- **Blocking on watchlist coverage:** D-06 says accept < 50% and move on. Don't expand the watchlist during Phase 0.
+**Important caveat:** RSS feeds are point-in-time snapshots. Items older than the feed's retention window will be missed. This is a known limitation — wrong URLs are data, not blockers.
+
+## Anti-Patterns to Avoid
+
+- **Using an OpenRouter Python SDK when httpx is sufficient** — OpenRouter's API is OpenAI-compatible; `httpx` + raw JSON is all that's needed for the spike. No LangChain, no `openai` SDK, no `anthropic` SDK.
+- **Hardcoding model IDs in spike scripts** — Load from `config/models.yaml` from the start. Every script that hardcodes a model ID is a regression against D-17.
+- **Testing too many models** — Per D-15, each task has one starter + one fallback. Don't evaluate 5 models per task; verify the starter works and fall back if it doesn't.
+- **Skipping model availability check** — The `/v1/models` verification step is mandatory (especially for Cohere embedding). The fallback chain exists precisely because model IDs aren't guaranteed at execution time.
+- **Building infrastructure during validation** — Spike scripts are disposable. No project structure, no CI, no tests during Phase 0.
 
 ## Don't Hand-Roll
 
 | Problem | Don't Build | Use Instead | Why |
 |---------|-------------|-------------|-----|
-| RSS parsing | Custom XML parser | feedparser 6.0.12 | Handles RSS 0.9x, 1.0, 2.0, Atom 1.0, CDF, JSON feeds, and all their quirks |
-| Discord bot | discord.py bot framework | MicroClaw's native Discord adapter | The spike validates MicroClaw's Discord support, not a custom bot |
-| Task scheduling | Windows Task Scheduler or cron | MicroClaw's built-in scheduler | The spike validates MicroClaw's scheduler specifically |
-| LLM API wrapper | Custom Ollama HTTP client | `ollama run` CLI or MicroClaw's provider layer | CLI is sufficient for evaluation; no need for custom API code |
+| OpenRouter API wrapper | Custom async OpenRouter client | `httpx` with raw JSON | The full spike needs ~30 lines of httpx; no SDK overhead |
+| YAML config loading | Custom parser | `PyYAML safe_load` | Standard, already in STACK.md |
+| Model ID verification | Assume IDs are correct | Call `/v1/models` first | Stale IDs cause confusing 404s; verify once, log findings |
+| RSS parsing | Custom XML parser | feedparser 6.0.12 | Handles all RSS/Atom variants and their quirks |
 
 ## Common Pitfalls
 
-### Pitfall 1: MicroClaw Prebuilt Binary vs. Source Build Confusion
-**What goes wrong:** User tries to build from source with `--features sqlite-vec` when the prebuilt binary is sufficient for the spike, wasting time on Rust compilation issues on Windows.
-**Why it happens:** STACK.md recommends `cargo build --release --features sqlite-vec`, which is the production path but NOT needed for Phase 0 smoke testing.
-**How to avoid:** Use the prebuilt binary (`iwr https://microclaw.ai/install.ps1 -UseBasicParsing | iex`) for the spike. The 4 core tests (scheduler, Discord, SQLite, control panel) don't require the sqlite-vec feature. Sqlite-vec build can wait for Phase 1.
-**Warning signs:** Encountering Rust toolchain errors, linker errors, or missing C dependencies during compilation.
+### Pitfall 1: `HTTP-Referer` Header Missing
+**What goes wrong:** OpenRouter returns 400 or 403 with a message about missing Referer header.
+**Why it happens:** OpenRouter requires `HTTP-Referer` and optionally `X-Title` headers per their API docs — unlike a plain OpenAI endpoint.
+**How to avoid:** Always include both headers. `HTTP-Referer: http://localhost` is acceptable for local dev/spike use.
+**Warning signs:** 400 response with `missing required header` or similar.
 
-### Pitfall 2: Ollama Model Too Large for Available RAM
-**What goes wrong:** User pulls a 32B dense model that requires ~20GB RAM, machine runs out of memory, Ollama swaps to disk, inference takes minutes per response.
-**Why it happens:** The machine has an AMD Radeon 890M (512MB VRAM, integrated GPU). All inference will be CPU-bound with system RAM.
-**How to avoid:** Check total system RAM before pulling models. If < 32GB, start with Gemma 4 27B MoE (needs ~16GB). If >= 32GB, try Qwen3 32B.
-**Warning signs:** `ollama run` hangs, system becomes unresponsive, Windows starts paging heavily.
+### Pitfall 2: Cohere Embedding Model Unavailable on OpenRouter `/v1/embeddings`
+**What goes wrong:** `/v1/models` lists the model but `/v1/embeddings` returns a 404 or model-not-found.
+**Why it happens:** OpenRouter's embedding endpoint may not expose all embedding-capable models that appear in the chat models list. Cohere embed availability is LOW-confidence (see model table above).
+**How to avoid:** Test the embedding endpoint explicitly in Step 1 of the eval (not just `/v1/models`). If it fails, immediately fall back to `voyage-3` per D-16. Record as a finding in MODEL-EVALUATION-RESULTS.md.
+**Warning signs:** 404 on `/v1/embeddings`, or response with no `data[0].embedding` field.
 
-### Pitfall 3: RSS Feed URLs Are Wrong or Changed
-**What goes wrong:** The feed URLs assumed in the watchlist don't work -- 404 errors, redirects, or the feed format has changed.
-**Why it happens:** Feed URLs are not stable over time. The starter list was researched weeks ago and URLs were never tested.
-**How to avoid:** The FIRST step of the watchlist spike should be verifying each feed URL returns valid RSS/Atom XML. Log which feeds work and which don't. A failed feed is a data point, not a blocker.
-**Warning signs:** feedparser returns empty entries, HTTP 404/403, or HTML instead of XML.
+### Pitfall 3: Nemotron Free Tier Rate Limits
+**What goes wrong:** The `:free` variant of Nemotron hits rate limits during the 15-task evaluation, causing delays or failures.
+**Why it happens:** Free-tier models on OpenRouter have lower rate limits than paid variants.
+**How to avoid:** If rate limit errors appear, drop `:free` suffix to use the paid tier (covered by D-22 $20 cap). Expected actual cost for 15 tasks is ~$0.30.
+**Warning signs:** 429 responses, unusually long delays.
 
-### Pitfall 4: Discord Bot Token Not Set Up
-**What goes wrong:** The MicroClaw Discord adapter fails to connect because no Discord bot application has been created or the token hasn't been configured.
-**Why it happens:** MicroClaw setup wizard asks for a Discord token, but the user hasn't created a Discord application/bot yet.
-**How to avoid:** Create the Discord bot application BEFORE running `microclaw setup`. Steps: Discord Developer Portal > New Application > Bot > Copy Token > Also enable Message Content Intent.
-**Warning signs:** MicroClaw starts but shows "Discord adapter: disconnected" or authentication errors.
+### Pitfall 4: Config File Not at Expected Path After Relocation
+**What goes wrong:** After relocating `microclaw.config.yaml` from repo root to `config/`, MicroClaw fails to start because it still looks for the old path.
+**Why it happens:** MicroClaw may use a default config path that can only be overridden with a CLI flag.
+**How to avoid:** Verify MicroClaw supports `--config ./config/microclaw.config.yaml` (or equivalent flag) before deleting the old path. Keep both until confirmed.
+**Warning signs:** MicroClaw errors about missing config or Discord adapter failing to connect.
 
-### Pitfall 5: Confusing "Spike Pass" with "Production Ready"
-**What goes wrong:** MicroClaw smoke test passes but the team assumes all Phase 1 features will work smoothly.
-**Why it happens:** A smoke test of 4 capabilities doesn't cover edge cases, error handling, concurrent operations, or long-running reliability.
-**How to avoid:** Record what was tested AND what was NOT tested. The spike answers "can it do the basics?" not "will it handle everything Phase 1 needs?"
-**Warning signs:** Overconfidence after a clean spike; skipping risk monitoring in Phase 1.
+### Pitfall 5: RSS Feed URLs Wrong or Changed
+**What goes wrong:** Feed URLs in the watchlist script return 404 or HTML, not XML.
+**Why it happens:** Feed URLs aren't stable. The starter list was researched weeks ago.
+**How to avoid:** First step of the watchlist spike = verify each URL. Failed feeds are data points, not blockers.
+**Warning signs:** feedparser returns empty entries, HTTP 4xx, or HTML content type.
+
+### Pitfall 6: Spending Approaching $20 Cap
+**What goes wrong:** Multi-model comparison after a starter fails drives cost toward the $20 cap (D-22).
+**Why it happens:** If 2-3 starters fail and need fallback comparison, token costs multiply.
+**How to avoid:** Log cumulative cost after each call. Abort spike if total approaches $18. Expected single-pass cost is ~$0.30 — the cap exists for a multi-model comparison scenario, not the happy path.
 
 ## Code Examples
 
-### MicroClaw Scheduled Task Test
-```
-# Via MicroClaw chat interface (Discord or Web):
-"Schedule a task to say 'Hello from scheduled task' every 5 minutes"
-
-# Verify via:
-"List my scheduled tasks"
-"Show task history"
-```
-[ASSUMED -- based on MicroClaw README description of natural-language task management]
-
-### Ollama Model Evaluation
-```bash
-# Pull the model
-ollama pull qwen3:32b
-
-# Test ranking (via CLI)
-ollama run qwen3:32b "Given these 3 AI news items, rank them by importance for someone who builds AI-powered tools:
-1. OpenAI released GPT-5 with improved reasoning
-2. A new VS Code extension adds AI code review
-3. Python 3.14 adds experimental JIT compiler
-Reply with just the ranking and a one-sentence reason for each."
-
-# Test summarization
-ollama run qwen3:32b "Summarize this in 2-3 sentences for a developer audience: [paste a real AI news article]"
-
-# Test 'why it matters'
-ollama run qwen3:32b "Explain in 2 sentences why this matters for someone who builds with AI tools: [paste headline + first paragraph]"
-```
-[VERIFIED: Ollama CLI usage pattern from ollama.com docs]
-
-### Watchlist Feed Verification
+### Verify Model Availability
 ```python
-import feedparser
+import httpx, yaml
 
-url = "https://simonwillison.net/atom/everything/"
-feed = feedparser.parse(url)
-print(f"Feed title: {feed.feed.get('title', 'N/A')}")
-print(f"Entries: {len(feed.entries)}")
-for entry in feed.entries[:3]:
-    print(f"  - {entry.get('title', 'N/A')} ({entry.get('published', 'no date')})")
+with open("config/microclaw.config.yaml") as f:
+    cfg = yaml.safe_load(f)
+
+headers = {
+    "Authorization": f"Bearer {cfg['openrouter_api_key']}",
+    "HTTP-Referer": "http://localhost",
+}
+
+resp = httpx.get("https://openrouter.ai/api/v1/models", headers=headers, timeout=15)
+available = {m["id"] for m in resp.json()["data"]}
+
+required = [
+    "google/gemini-3-flash-preview",
+    "nvidia/nemotron-3-super-120b-a12b",
+    "openai/gpt-5.4",
+    "cohere/embed-multilingual-v3.0",
+]
+for mid in required:
+    status = "FOUND" if mid in available else "MISSING"
+    print(f"  {status}: {mid}")
 ```
-[VERIFIED: feedparser standard usage pattern]
+
+### Run a Ranking Task
+```python
+import time
+
+def ranking_task(model: str, items: list[str]) -> tuple[str, float]:
+    numbered = "\n".join(f"{i+1}. {item}" for i, item in enumerate(items))
+    prompt = f"Rank these AI news items by importance for someone who builds AI-powered tools. Reply with the ranked list and one sentence rationale per item:\n\n{numbered}"
+    start = time.monotonic()
+    resp = httpx.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers=headers,
+        json={"model": model, "messages": [{"role": "user", "content": prompt}]},
+        timeout=60,
+    )
+    resp.raise_for_status()
+    elapsed = time.monotonic() - start
+    return resp.json()["choices"][0]["message"]["content"], elapsed
+```
+
+### Test Embedding Endpoint
+```python
+def test_embedding(model: str, text: str = "OpenAI released a new model") -> dict:
+    resp = httpx.post(
+        "https://openrouter.ai/api/v1/embeddings",
+        headers=headers,
+        json={"model": model, "input": text},
+        timeout=30,
+    )
+    if resp.status_code != 200:
+        return {"status": "FAIL", "code": resp.status_code, "body": resp.text}
+    data = resp.json()["data"][0]["embedding"]
+    return {"status": "PASS", "dimensions": len(data), "sample": data[:5]}
+```
 
 ## State of the Art
 
-| Old Approach | Current Approach | When Changed | Impact |
-|--------------|------------------|--------------|--------|
-| MicroClaw v0.1.50 | v0.1.51 available | 2026-04-12 | Minor -- memory/skill optimizations. Use .51. |
-| Ollama v0.20.5 | v0.20.6 available | 2026-04-12 | Minor -- Gemma 4 tool calling fix. Use .6. |
-| uv 0.8.13 (installed) | uv 0.11.6 (STACK.md target) | Unknown | uv 0.8.13 is functional for spike. Upgrade not needed in Phase 0. |
+| Old Approach | Current Approach | Changed | Impact |
+|--------------|------------------|---------|--------|
+| Local Ollama (Qwen3 32B / Gemma 4 27B) | OpenRouter remote per-task models | 2026-04-24 | Major — all Phase 0 Spike 2 instructions referencing Ollama are superseded |
+| Single model for all tasks | Per-task model selection via `config/models.yaml` | 2026-04-24 | Structural change — config-driven from day 1 |
+| nomic-embed-text (local Ollama) | cohere/embed-multilingual-v3.0 via OpenRouter | 2026-04-24 | Availability unconfirmed; fallback chain documented |
+| `microclaw.config.yaml` at repo root | `config/microclaw.config.yaml` (D-19) | 2026-04-24 (planned) | Setup step in Plan 00-02 |
 
 ## Assumptions Log
 
 | # | Claim | Section | Risk if Wrong |
 |---|-------|---------|---------------|
-| A1 | Feed URLs for the 9 starter sources are approximately correct | Spike 3 architecture | Low -- verifying URLs is part of the spike; wrong URLs are data, not blockers |
-| A2 | nomic-embed-text produces 768-dimension vectors compatible with sqlite-vec | Embedding model recommendation | Low -- embedding model is not tested in Phase 0, only in Phase 1+ |
-| A3 | Discord bot creation requires Message Content Intent enabled | Pitfall 4 | Medium -- if MicroClaw needs specific intents not documented, setup will fail |
-| A4 | MicroClaw prebuilt binary includes SQLite support without needing sqlite-vec build flag | Pitfall 1 | Medium -- if prebuilt lacks SQLite entirely, would need source build |
-| A5 | User has >= 16GB system RAM for running Ollama models | Ollama hardware constraint | High -- if < 16GB, even Gemma 4 27B MoE won't run well |
-| A6 | MicroClaw `setup` wizard handles Discord adapter configuration interactively | Setup sequence | Medium -- if it requires manual config file editing, setup instructions need adjusting |
+| A1 | Feed URLs for the 9 starter sources are approximately correct | Spike 3 | Low — verifying URLs is part of the spike |
+| A2 | OpenRouter's `/v1/embeddings` endpoint accepts the same bearer auth and `HTTP-Referer` headers as `/v1/chat/completions` | OpenRouter API pattern | Low — same auth scheme per docs |
+| A3 | `cohere/embed-multilingual-v3.0` returns 1024-dim vectors if available on OpenRouter | Embedding model | Medium — if dimensions differ, sqlite-vec schema needs updating |
+| A4 | OpenRouter cost for 15 evaluation tasks is well under $20 | D-22 budget | Low — worst case multi-model comparison is still likely < $5 |
+| A5 | MicroClaw accepts `--config ./config/microclaw.config.yaml` CLI flag for relocated config | Pitfall 4 | Medium — if not supported, D-19 relocation must wait for Phase 1 |
+| A6 | `nvidia/nemotron-3-super-120b-a12b` (without `:free`) is available on paid tier if free tier rate limits trigger | Pitfall 3 | Low — paid variant historically available when free is listed |
 
 ## Open Questions
 
-1. **How much system RAM does the target machine have?**
-   - What we know: GPU is AMD Radeon 890M (integrated, 512MB VRAM). CPU inference only.
-   - What's unclear: Total system RAM. This determines whether Qwen3 32B (needs ~20GB) or Gemma 4 27B MoE (needs ~16GB) is feasible.
-   - Recommendation: Check RAM first (`systeminfo | findstr "Total Physical Memory"`). If < 32GB, default to Gemma 4 27B.
+1. **Does `cohere/embed-multilingual-v3.0` actually work through OpenRouter's `/v1/embeddings` endpoint?**
+   - What we know: Model appears in Cohere section of OpenRouter catalog; embedding endpoint exists per docs.
+   - What's unclear: Whether this specific embedding model is exposed vs. only chat/completion models.
+   - Recommendation: Test this in Step 1 of Plan 00-02 before running any evaluation. If fails, immediately use `voyage-3`.
 
-2. **Does the MicroClaw prebuilt Windows binary include SQLite support out of the box?**
-   - What we know: The prebuilt binary is 16.2MB. SQLite is described as the default storage backend.
-   - What's unclear: Whether "default" means it's always bundled, or if it requires the sqlite-vec feature flag.
-   - Recommendation: Install prebuilt and run `microclaw doctor` to check. Regular SQLite (without vec) should be bundled.
+2. **Does MicroClaw support a `--config` CLI flag for non-default config paths?**
+   - What we know: Config currently lives at repo root, which works. D-19 calls for relocation to `config/`.
+   - What's unclear: Whether MicroClaw reads config via a flag or a fixed convention.
+   - Recommendation: Check `microclaw --help` output. If no flag, defer D-19 relocation to Phase 1 and only create `config/models.yaml` in Plan 00-02.
 
-3. **Does the user already have a Discord server and bot token ready?**
-   - What we know: The project targets Discord delivery.
-   - What's unclear: Whether the Discord application/bot has been created.
-   - Recommendation: Create the Discord application before starting the MicroClaw spike.
+3. **Are the exact Nemotron and Gemini model IDs correct?**
+   - What we know: Research found `google/gemini-3-flash-preview` and `nvidia/nemotron-3-super-120b-a12b` as likely IDs (HIGH confidence).
+   - What's unclear: Whether the Gemini variant should include a date suffix (e.g., `-20251217`).
+   - Recommendation: Check `/v1/models` endpoint at execution time and use the exact ID from the response.
 
 ## Environment Availability
 
-| Dependency | Required By | Available | Version | Fallback |
-|------------|------------|-----------|---------|----------|
-| MicroClaw | Spike 1 | Not installed | -- | Install via PowerShell one-liner |
-| Ollama | Spike 2 | Not installed | -- | Install via OllamaSetup.exe from ollama.com |
-| Python | Spike 3 | Available | 3.13.12 | -- |
-| uv | Spike 3 | Available | 0.8.13 | pip works too |
-| Cargo/Rust | NOT NEEDED for spike | Available | 1.94.1 | Only needed if source build required |
-| NVIDIA GPU | Ollama acceleration | Not available | -- | CPU-only inference (slower but functional) |
-| Discord bot token | Spike 1 | Unknown | -- | Must be created at Discord Developer Portal |
-| sqlite3 CLI | Spike 1 verification | Unknown | -- | Can verify SQLite via MicroClaw control panel instead |
+| Dependency | Required By | Available | Version | Notes |
+|------------|-------------|-----------|---------|-------|
+| MicroClaw | Phase 1+ | YES | v0.1.50 | Validated Plan 00-01 |
+| OpenRouter API key | Spike 2 | NEEDS SETUP | -- | Add to `config/microclaw.config.yaml` |
+| Python | Spikes 2 & 3 | YES | 3.13.12 | 3.12 preferred for compatibility; 3.13 functional |
+| uv | Spikes 2 & 3 | YES | 0.8.13 | Functional for spike; 0.11.6 is STACK.md target |
+| httpx | Spike 2 | NEEDS INSTALL | 0.28.1 | `uv pip install httpx==0.28.1` |
+| PyYAML | Spike 2 | NEEDS INSTALL | 6.0.2+ | `uv pip install PyYAML` |
+| feedparser | Spike 3 | NEEDS INSTALL | 6.0.12 | `uv pip install feedparser==6.0.12` |
+| System RAM | Spike 2 (irrelevant now) | YES | ~32 GB | Confirmed Plan 00-01; irrelevant for remote LLM |
+| GPU | Spike 2 (irrelevant now) | AMD Radeon 890M | 512 MB VRAM | No useful offload; moot with OpenRouter |
+| Ollama | NOT NEEDED for Spike 2 | Running (0.21.0) | -- | Not used by Plan 00-02; keep for potential future use |
 
-**Missing dependencies with no fallback:**
-- None -- all missing tools (MicroClaw, Ollama) have straightforward installers.
-
-**Missing dependencies with fallback:**
-- GPU acceleration: Not available (AMD integrated GPU). Fallback: CPU inference. Impact: slower Ollama responses (seconds to minutes per query vs. sub-second with GPU).
+**Missing with no fallback:** OpenRouter API key — must be obtained from openrouter.ai before Plan 00-02 can run.
 
 ## Validation Architecture
 
 ### Test Framework
+
 | Property | Value |
 |----------|-------|
-| Framework | Manual validation (spikes are smoke tests, not automated test suites) |
-| Config file | None -- Phase 0 does not establish test infrastructure |
-| Quick run command | N/A |
-| Full suite command | N/A |
+| Framework | Manual validation (spikes are smoke tests) |
+| Automation | Partially automated (Python scripts) |
+| Config file | `config/models.yaml` (Plan 00-02 output) |
+| Quick run | `python spike_openrouter.py` |
 
-### Phase Requirements to Test Map
-Phase 0 has no formal requirement IDs (risk mitigation, not feature delivery). Validation is structured as go/no-go decisions:
+### Spike → Requirement Map
 
-| Spike | Behavior | Test Type | Validation Method | Automated? |
-|-------|----------|-----------|-------------------|------------|
-| MicroClaw | Scheduler fires on time | Manual smoke test | Schedule task, observe execution | No |
-| MicroClaw | Discord posting works | Manual smoke test | Send message, verify in Discord | No |
-| MicroClaw | SQLite persists data | Manual smoke test | Query microclaw.db after run | No |
-| MicroClaw | Control panel accessible | Manual smoke test | Open http://127.0.0.1:10961 | No |
-| Ollama | Model produces usable output | Manual quality judgment | Run 10-15 tasks, user evaluates | No |
-| Watchlist | Feeds return recent items | Semi-automated | Python script fetches and lists | Partially |
-| Watchlist | Coverage >= 50% | Manual review | User compares items vs. known news | No |
-
-### Wave 0 Gaps
-- None -- Phase 0 intentionally does not create test infrastructure. Test framework setup belongs in Phase 1.
+| Spike | Behavior | Validation Method | Automated? |
+|-------|----------|-------------------|------------|
+| MicroClaw | All 4 capabilities | Manual smoke test | No — COMPLETE |
+| OpenRouter | Model availability | `/v1/models` API call | Yes |
+| OpenRouter | Ranking quality | 5 tasks, user judges | Partial |
+| OpenRouter | Summarization quality | 5 tasks, user judges | Partial |
+| OpenRouter | Why-it-matters quality | 3-5 tasks, user judges | Partial |
+| OpenRouter | Embedding endpoint works | `/v1/embeddings` test call | Yes |
+| Watchlist | Feeds return recent items | Python feedparser script | Partial |
+| Watchlist | Coverage >= 50% | User review | No |
 
 ## Security Domain
 
-Phase 0 is a validation-only phase with no production code. Security considerations are minimal:
-
 | ASVS Category | Applies | Notes |
 |---------------|---------|-------|
-| V2 Authentication | No | No auth in spikes |
-| V3 Session Management | No | No sessions |
-| V4 Access Control | No | Single user, local only |
-| V5 Input Validation | No | No user input processing |
-| V6 Cryptography | No | No crypto operations |
+| V2 Authentication | No | No app auth in spikes |
+| V6 Cryptography | Minimal | OpenRouter API key — store in gitignored `config/microclaw.config.yaml` only |
 
-**Sole security note:** The Discord bot token is a secret. During the MicroClaw spike, ensure the token is stored in MicroClaw's config (not committed to git) and that the `.gitignore` excludes MicroClaw's data directory.
+**Sole security note:** OpenRouter API key must never be committed to git. `config/microclaw.config.yaml` is already gitignored (commit `10eb975`). The new `config/models.yaml` is safe to track (no secrets; only model IDs). Use granular `.gitignore` entries if the full `config/` folder is not blanket-ignored.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- [MicroClaw GitHub README](https://github.com/microclaw/microclaw) -- verified Discord adapter, scheduler (60s poll), SQLite default, web control panel (port 10961), PowerShell installer, `microclaw setup`/`doctor`/`start` commands
-- [MicroClaw Releases](https://github.com/microclaw/microclaw/releases) -- verified v0.1.51 (2026-04-12), Windows binary available (16.2MB)
-- [Ollama GitHub Releases](https://github.com/ollama/ollama/releases) -- verified v0.20.6 (2026-04-12) as latest
-- [Ollama Download](https://ollama.com/download/windows) -- verified Windows installer availability
-- Local environment probes -- verified Python 3.13.12, uv 0.8.13, Cargo 1.94.1, AMD Radeon 890M (512MB VRAM)
+- [OpenRouter API docs](https://openrouter.ai/docs) — verified `/v1/chat/completions`, `/v1/embeddings`, bearer auth, `HTTP-Referer` requirement, per-model pricing
+- [OpenRouter models catalog](https://openrouter.ai/models) — verified model availability research
+- [Plan 00-01 SPIKE-RESULTS.md](.planning/phases/00-validation-spikes/00-01-SPIKE-RESULTS.md) — environment facts: 32 GB RAM, 6.4 GB free, AMD Radeon 890M, MicroClaw validated
+- [Phase 0 CONTEXT.md](.planning/phases/00-validation-spikes/00-CONTEXT.md) — D-13 through D-24 decisions locked 2026-04-24
+- Local environment probes — Python 3.13.12, uv 0.8.13, Ollama 0.21.0, MicroClaw v0.1.50
 
 ### Secondary (MEDIUM confidence)
-- [Qwen3 32B on Ollama](https://ollama.com/library/qwen3:32b) -- model availability confirmed
-- [Gemma 4 27B on Ollama](https://ollama.com/library/gemma4:27b) -- model availability confirmed, MoE architecture with ~3.8B active params
-- [nomic-embed-text on Ollama](https://ollama.com/library/nomic-embed-text) -- embedding model availability confirmed
-- [Best Ollama Models 2026](https://studyhub.net.in/techtools/best-ollama-models-in-2026-top-10-ranked-by-use-case-hardware/) -- Qwen3 32B MMLU score 83.2%
-- [Embedding model comparison](https://www.arsturn.com/blog/understanding-ollamas-embedding-models) -- nomic-embed-text vs mxbai-embed-large accuracy comparison
-- `.planning/research/STACK.md` -- project stack decisions
-- `.planning/RISK-REVIEW.md` -- R1, R3, R4 risk definitions and starter watchlist composition
+- [OpenRouter - Gemini 3 Flash Preview](https://openrouter.ai/google/gemini-3-flash-preview) — model ID confirmed
+- [OpenRouter - Nemotron 3 Super](https://openrouter.ai/nvidia/nemotron-3-super-120b-a12b:free) — free variant confirmed; paid ID inferred
+- [OpenRouter - GPT-5.4](https://openrouter.ai/openai/gpt-5.4) — model ID confirmed
+- [OpenRouter Embeddings API](https://openrouter.ai/docs/api/reference/embeddings) — endpoint exists
+- `.planning/research/STACK.md` — confirmed httpx, PyYAML, pydantic as standard choices
 
 ### Tertiary (LOW confidence)
-- Feed URLs for the 9 starter sources -- best-guess URLs that must be verified during execution
+- `cohere/embed-multilingual-v3.0` availability on OpenRouter `/v1/embeddings` — unconfirmed; must test at execution
+- Feed URLs for 9 starter sources — best-guess, must verify during Spike 3
 
 ## Metadata
 
 **Confidence breakdown:**
-- Standard stack: HIGH -- MicroClaw/Ollama versions verified against GitHub releases, Python/uv verified locally
-- Architecture (spike design): MEDIUM -- MicroClaw configuration details assumed from README, not personally tested
-- Pitfalls: MEDIUM -- based on domain knowledge and hardware analysis, not prior experience with MicroClaw on this specific hardware
-- Model selection: MEDIUM -- based on benchmark data and community reports, not personal evaluation
+- Standard stack: HIGH — OpenRouter API verified, Python deps confirmed, environment known
+- OpenRouter model IDs: HIGH for chat models; LOW for Cohere embedding availability
+- Architecture (spike design): MEDIUM — OpenRouter client pattern is standard; config relocation (D-19) has one open question about MicroClaw's `--config` flag support
+- Pitfalls: MEDIUM-HIGH — based on known OpenRouter behavior and D-19/D-20 config decisions
 
-**Research date:** 2026-04-13
-**Valid until:** 2026-04-20 (7 days -- fast-moving tools, versions may change)
+**Research dates:** Original 2026-04-13; updated 2026-04-24
+**Valid until:** 2026-05-08 (2 weeks — model availability may shift; verify IDs at execution)

@@ -14,19 +14,12 @@ This roadmap delivers one explicit daily AI-intelligence workflow from end to en
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 0: Validation Spikes** - De-risk critical assumptions before committing to implementation. *(Plan 00-01 COMPLETE; Plans 00-02 and 00-03 pending.)*
-- [ ] **Phase 1: Ingestion Foundation & Run Visibility** - Establish curated intake and make each daily digest run observable.
-- [ ] **Phase 1.5: Thin Digest** - Deliver a minimal daily digest to Discord to close the time-to-value gap.
-- [ ] **Phase 2: Canonical Story Formation** - Collapse overlapping coverage into trustworthy story records with visible confidence.
-- [ ] **Phase 3: Ranked Discord Digest** - Deliver a short, topic-aware, cited AI digest in Discord.
-- [ ] **Phase 4: Feedback & Suppression** - Let the user shape future digests with direct feedback and mutes.
-
-## Phase Details
-
+- [ ] **Phase 0: Validation Spikes** - De-risk critical assumptions (R1, R3, R4) before committing to implementation. *(Plan 00-01 COMPLETE; Plans 00-02 and 00-03 pending.)*
+...
 ### Phase 0: Validation Spikes
 **Goal**: Validate that MicroClaw, OpenRouter, and the starter watchlist are sufficient for v1 before writing application code.
 **Depends on**: Nothing
-**Requirements**: None (risk mitigation, not feature delivery)
+**Requirements**: R1, R3, R4 (risk mitigation)
 **Success Criteria** (what must be TRUE):
   1. MicroClaw spike confirms scheduler, Discord posting, and SQLite persistence work on Windows (R1).
   2. OpenRouter API evaluation on 10-20 representative ranking/summarization tasks meets minimum quality bar (R3).
@@ -35,8 +28,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 00-01-PLAN.md - Install MicroClaw, smoke-test 4 critical capabilities (scheduler, Discord, SQLite, control panel), record go/no-go. **COMPLETE 2026-04-23 - GO.**
-- [ ] 00-02-PLAN.md - Evaluate OpenRouter per-task starter models (Gemini 3 Flash Preview / Nemotron 3 Super / GPT-5.4 / Cohere embed-v3.0) on 10-15 ranking/summarization/explanation tasks under a $20 spend cap; produce `config/models.yaml`; record quality go/no-go.
-- [ ] 00-03-PLAN.md - Fetch 9 starter RSS feeds, collect recent items, user reviews coverage against real AI news week.
+- [ ] 00-02-PLAN.md - Evaluate OpenRouter per-task starter model assignments (D-18) on 10-15 tasks; verify availability/quality; record R3 go/no-go.
+- [ ] 00-03-PLAN.md - Fetch 9 starter RSS feeds, collect recent items, user reviews coverage against real AI news week; record R4 go/no-go.
+
 
 ### Phase 1: Ingestion Foundation & Run Visibility
 **Goal**: User can rely on a local-first daily digest workflow that gathers candidate updates from a curated watchlist and makes each run outcome visible.

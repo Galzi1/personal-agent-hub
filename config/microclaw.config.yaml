@@ -1,0 +1,86 @@
+# MicroClaw configuration
+# D-19: Relocated from repo root to config/ per Plan 00-02.
+# D-20: OpenRouter API key stored here alongside Discord bot token and LLM key.
+# THIS FILE IS GITIGNORED — do not commit secrets.
+
+# Channel settings (set `enabled: false` to keep credentials without activating the channel)
+# setup wizard default: web when no channels are selected
+channels:
+  web:
+    enabled: true
+  discord:
+    enabled: true
+    default_account: "main"
+    accounts:
+      main:
+        enabled: true
+        bot_token: "${DISCORD_BOT_TOKEN}"
+subagents:
+  max_concurrent: 4
+  max_active_per_chat: 5
+  run_timeout_secs: 900
+  announce_to_chat: true
+  max_spawn_depth: 1
+  max_children_per_run: 5
+  thread_bound_routing_enabled: true
+  announce_relay_interval_secs: 15
+  max_tokens_per_run: 400000
+  orchestrate_max_workers: 5
+  acp:
+    enabled: true
+    command: "microclaw"
+    args: ["acp"]
+
+# LLM provider (anthropic, openai-codex, ollama, openai, openrouter, deepseek, synthetic, chutes, google, etc.)
+llm_provider: "anthropic"
+# API key for LLM provider
+api_key: "${ANTHROPIC_API_KEY}"
+# Model name (leave empty for provider default)
+model: "claude-sonnet-4-5-20250929"
+# Optional reusable provider profiles for per-bot/channel selection
+# provider_presets:
+#   provider1:
+#     provider: "openai"
+#     api_key: "sk-..."
+#     llm_base_url: "https://example.com/v1"
+#     llm_user_agent: "microclaw/1.0"
+#     default_model: "gpt-5.2"
+#     show_thinking: false
+#   deepseek-hk:
+#     provider: "deepseek"
+#     api_key: "sk-..."
+# Show model thinking/reasoning text when available
+show_thinking: false
+# OpenAI-compatible request body overrides (optional)
+# openai_compat_body_overrides: { temperature: 0.2 }
+
+# OpenRouter API key — used by Python spike and future application code (D-20)
+openrouter_api_key: ""
+
+data_dir: "C:\\Users\\galzi\\.microclaw"
+working_dir: "C:\\Users\\galzi\\.microclaw\\working_dir"
+# Optional timezone override (IANA), e.g. Asia/Shanghai. Default: system timezone.
+high_risk_tool_user_confirmation_required: true
+# Optional container sandbox for bash tool execution
+sandbox:
+  mode: "off"
+
+# Memory reflector: periodically extracts structured memories from conversations
+reflector_enabled: true
+reflector_interval_mins: 15
+memory_token_budget: 1500
+
+web_fetch_url_validation:
+  enabled: true
+  allowed_schemes: ["https", "http"]
+  denylist_hosts:
+    - "localhost"
+    - "127.0.0.1"
+    - "::1"
+    - "metadata.google.internal"
+    - "169.254.169.254"
+  feed_sync:
+    enabled: false
+
+# Optional SOUL files directory (defaults to <data_dir>/souls)
+souls_dir: "C:\\Users\\galzi\\.microclaw\\souls"

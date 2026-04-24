@@ -1,0 +1,12 @@
+# Per-task model selection. Each key independently tunable (D-15, D-17).
+# Model IDs verified against OpenRouter /v1/models at Plan 00-02 execution (2026-04-24).
+# Do not hardcode these IDs in application code -- always load from this file (D-17).
+tasks:
+  ranking:
+    model: "google/gemini-flash-1.5"
+  summarization:
+    model: "nvidia/nemotron-super-49b-v1"
+  why_it_matters:
+    model: "openai/gpt-4.1"
+  embedding:
+    model: "cohere/embed-multilingual-v3.0"
