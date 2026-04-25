@@ -10,7 +10,7 @@ import time
 import sys
 from pathlib import Path
 
-# Load config — no hardcoded API key or model IDs (D-17, D-20)
+# Load config - no hardcoded API key or model IDs (D-17, D-20)
 CONFIG_PATH = Path("config/microclaw.config.yaml")
 MODELS_PATH = Path("config/models.yaml")
 
@@ -92,10 +92,12 @@ def chat(task_type: str, prompt: str, model_override: str | None = None) -> dict
         resp.raise_for_status()
         elapsed = time.monotonic() - start
         data = resp.json()
-        content = data["choices"][0]["message"]["content"]
+        choices = data.get("choices") or []
+        if not choices:
+            raise ValueError(f"Empty choices in response: {data.get('error', data)}")
+        content = choices[0]["message"]["content"]
         usage = data.get("usage", {})
-        # Approximate cost tracking — OpenRouter may include cost in response
-        cost = data.get("usage", {}).get("cost", 0.0) or 0.0
+        cost = usage.get("cost", 0.0) or 0.0
         total_cost_usd += cost
         return {
             "status": "ok",
@@ -218,7 +220,7 @@ sep("STEP B: RANKING TASKS (5 batches, 3-5 items each)")
 RANKING_SETS = [
     [
         "OpenAI releases GPT-5.4 with 2x coding benchmark improvement",
-        "Google DeepMind publishes Gemini 3 Flash Preview — 1M context, $0.075/1M tokens",
+        "Google DeepMind publishes Gemini 3 Flash Preview - 1M context, $0.075/1M tokens",
         "Cursor 1.0 ships with background agent and checkpoint rollback",
     ],
     [
@@ -397,7 +399,7 @@ else:
                 )
             else:
                 print(
-                    f"  ALL EMBEDDING FALLBACKS FAILED — escalate to separate embedding provider decision"
+                    f"  ALL EMBEDDING FALLBACKS FAILED - escalate to separate embedding provider decision"
                 )
                 findings.append(
                     {

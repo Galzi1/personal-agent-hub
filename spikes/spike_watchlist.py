@@ -40,8 +40,8 @@ def fetch_feed(name: str, url: str) -> dict:
 
     try:
         # Use httpx to fetch with proper headers and timeout
-        client = httpx.Client(follow_redirects=True, timeout=30.0)
-        response = client.get(url, headers=HEADERS)
+        with httpx.Client(follow_redirects=True, timeout=30.0) as client:
+            response = client.get(url, headers=HEADERS)
         result["http_status"] = response.status_code
 
         if response.status_code != 200:
@@ -54,7 +54,7 @@ def fetch_feed(name: str, url: str) -> dict:
 
         if feed.bozo and not feed.entries:
             result["status"] = "PARSE_ERROR"
-            result["error"] = str(feed.bozo_exception)
+            result["error"] = str(feed.bozo_exception) if feed.bozo_exception else "Unknown parse error (bozo=True)"
             return result
 
         result["total_entries"] = len(feed.entries)
@@ -68,10 +68,9 @@ def fetch_feed(name: str, url: str) -> dict:
                     published = datetime.fromtimestamp(mktime(parsed_time), tz=timezone.utc)
                     break
 
-            # Include entry if within 7 days or if no date available (include by default)
-            include = True
-            if published and published < CUTOFF:
-                include = False
+            include = False
+            if published and published >= CUTOFF:
+                include = True
 
             if include:
                 result["recent_entries"].append({

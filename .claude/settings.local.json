@@ -8,7 +8,12 @@
       "Bash(node:*)",
       "Bash(powershell.exe *)",
       "Bash(rtk ls *)",
-      "Bash(date -Iseconds)"
+      "Bash(date -Iseconds)",
+      "Skill(gsd-progress)",
+      "Bash(spikes/.venv/Scripts/pip install *)",
+      "Bash(spikes/.venv/Scripts/python spikes/find_models.py)",
+      "Bash(spikes/.venv/Scripts/python -c ' *)",
+      "Skill(gsd-code-review)"
     ]
   },
   "prefersReducedMotion": true

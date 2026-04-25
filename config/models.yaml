@@ -1,5 +1,5 @@
 # Per-task model selection. Each key independently tunable (D-15, D-17).
-# Model IDs verified against OpenRouter /v1/models at Plan 00-02 execution (2026-04-24).
+# Model IDs verified against OpenRouter /v1/models on 2026-04-25.
 # Do not hardcode these IDs in application code -- always load from this file (D-17).
 tasks:
   ranking:
@@ -9,4 +9,4 @@ tasks:
   why_it_matters:
     model: "openai/gpt-5.4"
   embedding:
-    model: "cohere/embed-multilingual-v3.0"
+    model: "voyage-3"                        # UNVERIFIED: /v1/embeddings returning 401; verify API key billing before Phase 2
