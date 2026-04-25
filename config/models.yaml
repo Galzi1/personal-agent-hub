@@ -10,3 +10,6 @@ tasks:
     model: "openai/gpt-5.4"
   embedding:
     model: "voyage-3"                        # UNVERIFIED: /v1/embeddings returning 401; verify API key billing before Phase 2
+  # NEW (D-06):
+  relevance:
+    model: "google/gemini-3-flash-preview"   # same as ranking per D-06

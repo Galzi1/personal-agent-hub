@@ -13,7 +13,10 @@
       "Bash(spikes/.venv/Scripts/pip install *)",
       "Bash(spikes/.venv/Scripts/python spikes/find_models.py)",
       "Bash(spikes/.venv/Scripts/python -c ' *)",
-      "Skill(gsd-code-review)"
+      "Skill(gsd-code-review)",
+      "Skill(gsd-plan-phase)",
+      "Skill(gsd-execute-phase)",
+      "Skill(gsd-ship)"
     ]
   },
   "prefersReducedMotion": true
