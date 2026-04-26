@@ -1,0 +1,43 @@
+# Curated AI news watchlist. Phase 4 mute-a-source writes to this file.
+# Source URLs verified 2026-04-25 against 00-03-SPIKE-RESULTS.md.
+# D-01: feed URLs live in config/sources.yaml alongside models.yaml
+# D-02: schema - name, url, enabled (bool), note (human metadata only)
+# D-03: 7 verified feeds; notes pre-populated for noisy sources
+# D-04: Cursor Changelog and Anthropic Blog documented as UNAVAILABLE
+sources:
+  - name: "OpenAI Blog"
+    url: "https://openai.com/blog/rss.xml"
+    enabled: true
+    note: "Mixes academy/tutorial content with news - relevance filter handles academy URLs"
+  - name: "DeepMind Blog"
+    url: "https://deepmind.google/blog/rss.xml"
+    enabled: true
+    note: "Low volume (~2/week), high signal"
+  - name: "VS Code Blog"
+    url: "https://code.visualstudio.com/feed.xml"
+    enabled: true
+    note: "Covers all VSCode changes, not just Copilot/AI - relevance filter needed"
+  - name: "Ollama Releases"
+    url: "https://github.com/ollama/ollama/releases.atom"
+    enabled: true
+    note: "High RC/patch noise - consider grouping in digest"
+  - name: "TestingCatalog"
+    url: "https://testingcatalog.com/feed/"
+    enabled: true
+    note: "High-signal brief AI product news"
+  - name: "Simon Willison"
+    url: "https://simonwillison.net/atom/everything/"
+    enabled: true
+    note: "High volume, includes minor links alongside real news"
+  - name: "Latent Space"
+    url: "https://www.latent.space/feed"
+    enabled: true
+    note: "Curated AINews daily roundups - highest value per item"
+  - name: "Cursor Changelog"
+    url: ""
+    enabled: false
+    note: "UNAVAILABLE - JS-rendered SPA, no RSS feed exists"
+  - name: "Anthropic Blog"
+    url: ""
+    enabled: false
+    note: "UNAVAILABLE - No RSS feed endpoint; all paths return 404"

@@ -28,8 +28,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 00-01-PLAN.md - Install MicroClaw, smoke-test 4 critical capabilities (scheduler, Discord, SQLite, control panel), record go/no-go. **COMPLETE 2026-04-23 - GO.**
-- [ ] 00-02-PLAN.md - Evaluate OpenRouter per-task starter model assignments (D-18) on 10-15 tasks; verify availability/quality; record R3 go/no-go.
-- [ ] 00-03-PLAN.md - Fetch 9 starter RSS feeds, collect recent items, user reviews coverage against real AI news week; record R4 go/no-go.
+- [x] 00-02-PLAN.md - Evaluate OpenRouter per-task starter model assignments (D-18) on 10-15 tasks; verify availability/quality; record R3 go/no-go. **COMPLETE 2026-04-24 - GO.**
+- [x] 00-03-PLAN.md - Fetch 9 starter RSS feeds, collect recent items, user reviews coverage against real AI news week; record R4 go/no-go. **COMPLETE 2026-04-24 - GO.**
 
 
 ### Phase 1: Ingestion Foundation & Run Visibility
@@ -43,10 +43,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md - Bootstrap the empty repo with uv/pytest, local-only MicroClaw templates, and the shared Phase 1 test harness.
-- [ ] 01-02-PLAN.md - Define the trusted local watchlist, fixture-backed SRC-01 tests, and allowlisted multi-source raw-item ingestion.
-- [ ] 01-03-PLAN.md - Implement run IDs, retry/rerun lineage, append-only events, and the exact raw-event trace route.
-- [ ] 01-04-PLAN.md - Wire the end-to-end Phase 1 workflow, prove the live MicroClaw + OpenRouter runtime, add three separate Discord milestone posts, and register the 08:00 schedule.
+- [x] 01-01-PLAN.md - Bootstrap uv/pytest project, relocate microclaw config, sources.yaml with 7 verified feeds, Wave 0 test stubs (15 tests passing) **COMPLETE 2026-04-26.**
+- [x] 01-02-PLAN.md - config.py + ingester.py (RawItem, fetch_feed) + filter.py (relevance_filter); SRC-01 tests green **COMPLETE 2026-04-26.**
+- [x] 01-03-PLAN.md - db.py (runs + raw_items schema, CRUD) + discord.py (D-08 format helpers) + pipeline.py (run_digest orchestrator); DGST-04 tests green **COMPLETE 2026-04-26.**
+- [x] 01-04-PLAN.md - Live wiring: real OpenRouter key, live pipeline run, 3 milestone Discord posts, 08:00 recurring schedule registration **COMPLETE 2026-04-26.**
 
 ### Phase 1.5: Thin Digest
 **Goal**: Post a simple formatted list of ingested items to Discord daily, giving the user a tangible artifact before dedup and ranking exist.
@@ -58,8 +58,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Define memory/story tables and deduplication pipeline
-- [ ] 02-02-PLAN.md — Integrate Cognee Knowledge Engine and Story Recall API
+- [ ] 02-01-PLAN.md - Define memory/story tables and deduplication pipeline
+- [ ] 02-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
 
 ### Phase 2: Canonical Story Formation
 **Goal**: User gets one trustworthy story per underlying update, with uncertainty visible before stories are selected into the digest.
@@ -75,8 +75,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Define memory/story tables and deduplication pipeline
-- [ ] 02-02-PLAN.md — Integrate Cognee Knowledge Engine and Story Recall API
+- [ ] 02-01-PLAN.md - Define memory/story tables and deduplication pipeline
+- [ ] 02-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
 
 ### Phase 3: Ranked Discord Digest
 **Goal**: User receives a short, relevant, topic-aware daily digest in Discord that explains why each selected story matters.
@@ -94,8 +94,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Define memory/story tables and deduplication pipeline
-- [ ] 02-02-PLAN.md — Integrate Cognee Knowledge Engine and Story Recall API
+- [ ] 02-01-PLAN.md - Define memory/story tables and deduplication pipeline
+- [ ] 02-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
 
 ### Phase 4: Feedback & Suppression
 **Goal**: User can calibrate future digests directly by suppressing noise and marking which items were useful.
@@ -113,8 +113,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Define memory/story tables and deduplication pipeline
-- [ ] 02-02-PLAN.md — Integrate Cognee Knowledge Engine and Story Recall API
+- [ ] 02-01-PLAN.md - Define memory/story tables and deduplication pipeline
+- [ ] 02-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
 
 ## Progress
 
@@ -123,9 +123,9 @@ Phases execute in numeric order: 0 → 1 → 1.5 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Validation Spikes | 1/3 | In progress | - |
-| 1. Ingestion Foundation & Run Visibility | 0/4 | Not started | - |
-| 1.5. Thin Digest | 0/TBD | Not started | - |
+| 0. Validation Spikes | 3/3 | Complete | 2026-04-24 |
+| 1. Ingestion Foundation & Run Visibility | 4/4 | Complete | 2026-04-26 |
+| 1.5. Thin Digest | 0/TBD | Planned | - |
 | 2. Canonical Story Formation | 0/TBD | Not started | - |
 | 3. Ranked Discord Digest | 0/TBD | Not started | - |
 | 4. Feedback & Suppression | 0/TBD | Not started | - |
