@@ -68,18 +68,16 @@ def run_digest(db_path: str | None = None, conn: sqlite3.Connection | None = Non
             return format_no_items(run_num, dt, run_id)
         else:
             messages = format_digest(relevant_items, run_num, dt, run_id, raw_count, source_count)
-            posted = 0
-            try:
-                posted = post_to_discord(messages, discord_token, channel_id)
-                complete_run(conn, run_id, "success", raw_count, relevant_count, completed_at, None)
-                return f"posted {posted} messages"
-            except Exception as e:
-                logger.error(f"Discord API error after {posted}/{len(messages)} messages: {e}")
+            posted = post_to_discord(messages, discord_token, channel_id)
+            if posted < len(messages):
+                logger.error(f"Discord API error after {posted}/{len(messages)} messages")
                 complete_run(
                     conn, run_id, "partial", raw_count, relevant_count, completed_at,
-                    f"Discord API failed on chunk {posted + 1}: {e}"
+                    f"Discord API failed on chunk {posted + 1}"
                 )
                 return f"partial: posted {posted}/{len(messages)} messages"
+            complete_run(conn, run_id, "success", raw_count, relevant_count, completed_at, None)
+            return f"posted {posted} messages"
 
     except Exception as e:
         completed_at = datetime.now(timezone.utc).isoformat()

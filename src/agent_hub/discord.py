@@ -46,9 +46,10 @@ def format_digest(
     for item in items:
         title = item.title[:80] if len(item.title) > 80 else item.title
         line = f"\n\u2022 {title} [{item.source_name}]\n  <{item.link}>"
+        stripped = line.lstrip("\n")
         if len(current) + len(line) > CHUNK_LIMIT:
             chunks.append(current)
-            current = line.lstrip("\n")
+            current = stripped[:CHUNK_LIMIT]
         else:
             current += line
 
@@ -59,8 +60,7 @@ def format_digest(
 def post_to_discord(messages: list[str], token: str, channel_id: str) -> int:
     """Post messages to Discord REST API. Returns count of successfully posted messages.
 
-    Uses POST https://discord.com/api/v10/channels/{channel_id}/messages per D-12.
-    Raises httpx.HTTPStatusError on failure - caller handles partial status.
+    Returns partial count on HTTP error so caller can detect mid-stream failure.
     """
     url = f"https://discord.com/api/v10/channels/{channel_id}/messages"
     headers = {
@@ -71,6 +71,9 @@ def post_to_discord(messages: list[str], token: str, channel_id: str) -> int:
     with httpx.Client(timeout=30.0) as client:
         for msg in messages:
             resp = client.post(url, headers=headers, json={"content": msg})
-            resp.raise_for_status()
+            try:
+                resp.raise_for_status()
+            except httpx.HTTPStatusError:
+                return posted
             posted += 1
     return posted

@@ -104,8 +104,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: --stopped-at
-Stopped at: Phase 2 context gathered
-Resume file: --resume-file
+Last session: Phase 2 context gathered
+Stopped at: None
+Resume file: None
 
-**Planned Phase:** 2 (Thin Digest) — 2 plans — 2026-04-26T18:33:12.809Z
+**Planned Phase:** 2 (Thin Digest) - 2 plans - 2026-04-26T18:33:12.809Z

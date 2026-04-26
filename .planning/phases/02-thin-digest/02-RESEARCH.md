@@ -387,7 +387,7 @@ def test_run_digest_posts_to_discord(tmp_db_conn):
 
 ```python
 # Source: CONTEXT.md D-17; db.py pattern
-# SQLite does not enforce CHECK constraints by default, so adding "partial" requires
+# The status column has no CHECK constraint, so adding "partial" requires
 # no schema migration - just use the string "partial" in complete_run() calls.
 # Optional: add a comment to CREATE_RUNS documenting allowed values.
 complete_run(conn, run_id, "partial", raw_count, relevant_count, completed_at, error_msg)

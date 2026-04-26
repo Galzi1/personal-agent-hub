@@ -10,7 +10,7 @@ class ConfigError(Exception):
 
 def _expand(value: str) -> str:
     """Expand ${VAR} references using environment variables."""
-    return re.sub(r'\$\{(\w+)\}', lambda m: os.environ.get(m.group(1), m.group(0)), str(value))
+    return re.sub(r'\$\{(\w+)\}', lambda m: os.environ.get(m.group(1), ""), str(value))
 
 def load_sources() -> list[dict[str, Any]]:
     """Load curated AI news watchlist from config/sources.yaml."""

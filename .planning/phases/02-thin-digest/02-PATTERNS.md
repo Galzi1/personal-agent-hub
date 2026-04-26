@@ -197,7 +197,7 @@ def load_discord_config() -> tuple[str, str]:
 
 **Analog:** `src/agent_hub/db.py` - `complete_run()` (lines 48-61) and `CREATE_RUNS` (lines 17-26).
 
-**Modification required:** Comment-only change to document `partial` as a valid status. SQLite does not enforce CHECK constraints by default, so no schema migration is needed - `complete_run()` accepts any string for `status`.
+**Modification required:** Comment-only change to document `partial` as a valid status. The `status` column has no CHECK constraint, so no schema migration is needed - `complete_run()` accepts any string for `status`.
 
 **Pattern to follow** (lines 17-26 and 48-61):
 ```python
