@@ -83,4 +83,4 @@ web_fetch_url_validation:
 
 # Optional SOUL files directory (defaults to <data_dir>/souls)
 souls_dir: "C:\\Users\\galzi\\.microclaw\\souls"
-openrouter_api_key: "sk-ore-AAABBBCCC"
+openrouter_api_key: "${OPENROUTER_API_KEY}"
