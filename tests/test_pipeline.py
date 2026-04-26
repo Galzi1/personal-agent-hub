@@ -44,7 +44,8 @@ def test_run_status_failure(tmp_db_conn):
          patch("src.agent_hub.pipeline.relevance_filter", side_effect=FilterError("OpenRouter unreachable")), \
          patch("src.agent_hub.pipeline.load_sources", return_value=[{"name": "S", "url": "u", "enabled": True}]), \
          patch("src.agent_hub.pipeline.load_models", return_value={"relevance": "google/gemini-3-flash-preview"}), \
-         patch("src.agent_hub.pipeline.load_openrouter_key", return_value="test-key"):
+         patch("src.agent_hub.pipeline.load_openrouter_key", return_value="test-key"), \
+         patch("src.agent_hub.pipeline.load_discord_config", return_value=("tok", "123")):
         result = run_digest(conn=tmp_db_conn)
 
     assert result.startswith("\u274c")
