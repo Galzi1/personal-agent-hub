@@ -47,3 +47,28 @@ def load_openrouter_key() -> str:
         if isinstance(e, ConfigError):
             raise
         raise ConfigError(f"Failed to load OpenRouter key: {e}")
+
+
+def load_discord_config() -> tuple[str, str]:
+    """Return (bot_token, channel_id) from config/microclaw.config.yaml.
+
+    bot_token is at: channels.discord.accounts.main.bot_token
+    channel_id is at: channels.discord.channel_id
+    """
+    path = Path("config/microclaw.config.yaml")
+    if not path.exists():
+        raise ConfigError(f"Secret config not found: {path.absolute()}")
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+            token = data["channels"]["discord"]["accounts"]["main"]["bot_token"]
+            if not token or not str(token).strip():
+                raise ConfigError("channels.discord.accounts.main.bot_token missing in microclaw.config.yaml")
+            channel_id = data["channels"]["discord"].get("channel_id", "").strip()
+            if not channel_id:
+                raise ConfigError("channels.discord.channel_id missing in microclaw.config.yaml")
+            return str(token).strip(), channel_id
+    except Exception as e:
+        if isinstance(e, ConfigError):
+            raise
+        raise ConfigError(f"Failed to load Discord config: {e}")
