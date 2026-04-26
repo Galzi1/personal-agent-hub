@@ -1,7 +1,7 @@
 # MicroClaw local config - contains Discord bot token and LLM API keys.
 # Commit a microclaw.config.example.yaml with placeholders if you need a template.
 .env
-*.venvScriptsactivate
+*.venvScriptsactivate.bat
 .claude/worktrees
 .pytest_cache/
 .ruff_cache/
