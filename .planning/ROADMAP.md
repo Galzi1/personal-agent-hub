@@ -6,16 +6,13 @@ This roadmap delivers one explicit daily AI-intelligence workflow from end to en
 
 ## Phases
 
-**6 phases total (0, 1, 1.5, 2, 3, 4)**
+**6 phases total (0, 1, 2, 3, 4, 5)**
 
 **Phase Numbering:**
-- Integer phases (0, 1, 2, 3, 4): Planned milestone work
-- Decimal phases (1.5): Risk-informed insertions addressing validated concerns
-
-Decimal phases appear between their surrounding integers in numeric order.
+- Integer phases (0, 1, 2, 3, 4, 5): Planned milestone work
 
 - [ ] **Phase 0: Validation Spikes** - De-risk critical assumptions (R1, R3, R4) before committing to implementation. *(Plan 00-01 COMPLETE; Plans 00-02 and 00-03 pending.)*
-...
+
 ### Phase 0: Validation Spikes
 **Goal**: Validate that MicroClaw, OpenRouter, and the starter watchlist are sufficient for v1 before writing application code.
 **Depends on**: Nothing
@@ -48,7 +45,7 @@ Plans:
 - [x] 01-03-PLAN.md - db.py (runs + raw_items schema, CRUD) + discord.py (D-08 format helpers) + pipeline.py (run_digest orchestrator); DGST-04 tests green **COMPLETE 2026-04-26.**
 - [x] 01-04-PLAN.md - Live wiring: real OpenRouter key, live pipeline run, 3 milestone Discord posts, 08:00 recurring schedule registration **COMPLETE 2026-04-26.**
 
-### Phase 1.5: Thin Digest
+### Phase 2: Thin Digest
 **Goal**: Post a simple formatted list of ingested items to Discord daily, giving the user a tangible artifact before dedup and ranking exist.
 **Depends on**: Phase 1
 **Requirements**: None (risk mitigation for R2 - early value delivery)
@@ -58,29 +55,29 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md - Define memory/story tables and deduplication pipeline
-- [ ] 02-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
+- [ ] 02-01-PLAN.md - Define simple listing format and template
+- [ ] 02-02-PLAN.md - Wire listing format into pipeline delivery
 
-### Phase 2: Canonical Story Formation
+### Phase 3: Canonical Story Formation
 **Goal**: User gets one trustworthy story per underlying update, with uncertainty visible before stories are selected into the digest.
-**Depends on**: Phase 1
+**Depends on**: Phase 2
 **Requirements**: SIG-01, SIG-04
 **Success Criteria** (what must be TRUE):
   1. User receives one story candidate per underlying update even when many sources cover the same event.
   2. User does not see the same underlying update repeated as separate stories after duplicate coverage is collapsed.
   3. User can distinguish confirmed updates from uncertain or disputed items.
 **Architecture notes**:
-  - Introduce a `memory` table placeholder in SQLite alongside canonical stories - dedup/clustering benefits from remembering past story patterns, and Phase 4 memory promotion will extend this schema rather than retrofitting it.
-  - Research `topoteretes/cognee` (knowledge graphs) and `vectorize-io/hindsight` (learning memory) during Phase 2 planning to inform the memory schema shape.
+  - Introduce a `memory` table placeholder in SQLite alongside canonical stories - dedup/clustering benefits from remembering past story patterns, and Phase 5 memory promotion will extend this schema rather than retrofitting it.
+  - Research `topoteretes/cognee` (knowledge graphs) and `vectorize-io/hindsight` (learning memory) during Phase 3 planning to inform the memory schema shape.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md - Define memory/story tables and deduplication pipeline
-- [ ] 02-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
+- [ ] 03-01-PLAN.md - Define memory/story tables and deduplication pipeline
+- [ ] 03-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
 
-### Phase 3: Ranked Discord Digest
+### Phase 4: Ranked Discord Digest
 **Goal**: User receives a short, relevant, topic-aware daily digest in Discord that explains why each selected story matters.
-**Depends on**: Phase 2
+**Depends on**: Phase 3
 **Requirements**: SRC-02, SIG-02, SIG-03, DGST-01, DGST-02, DGST-03
 **Success Criteria** (what must be TRUE):
   1. User receives the daily digest in Discord.
@@ -94,12 +91,12 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md - Define memory/story tables and deduplication pipeline
-- [ ] 02-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
+- [ ] 04-01-PLAN.md - Design ranking rubrics and section templates
+- [ ] 04-02-PLAN.md - Implement topic-aware ranking and sectioning
 
-### Phase 4: Feedback & Suppression
+### Phase 5: Feedback & Suppression
 **Goal**: User can calibrate future digests directly by suppressing noise and marking which items were useful.
-**Depends on**: Phase 3
+**Depends on**: Phase 4
 **Requirements**: FDBK-01, FDBK-02, FDBK-03
 **Success Criteria** (what must be TRUE):
   1. User can mute a source so it no longer appears in future digests.
@@ -108,27 +105,27 @@ Plans:
   4. User can observe later digests reflecting those mute and usefulness signals.
 **Architecture notes**:
   - Save positive feedback alongside corrections - agents that only learn from mistakes become overly cautious (lesson from Squid Club multi-agent article).
-  - Extend the Phase 2 memory schema placeholder with promotion rules: logs → durable memory requires explicit validation, not automatic promotion.
+  - Extend the Phase 3 memory schema placeholder with promotion rules: logs → durable memory requires explicit validation, not automatic promotion.
   - Research `topoteretes/cognee` and `vectorize-io/hindsight` for memory engine options beyond raw SQLite.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md - Define memory/story tables and deduplication pipeline
-- [ ] 02-02-PLAN.md - Integrate Cognee Knowledge Engine and Story Recall API
+- [ ] 05-01-PLAN.md - Define feedback schema and mute logic
+- [ ] 05-02-PLAN.md - Implement interactive feedback loops
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 0 → 1 → 1.5 → 2 → 3 → 4
+Phases execute in numeric order: 0 → 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Validation Spikes | 3/3 | Complete | 2026-04-24 |
 | 1. Ingestion Foundation & Run Visibility | 4/4 | Complete | 2026-04-26 |
-| 1.5. Thin Digest | 0/TBD | Planned | - |
-| 2. Canonical Story Formation | 0/TBD | Not started | - |
-| 3. Ranked Discord Digest | 0/TBD | Not started | - |
-| 4. Feedback & Suppression | 0/TBD | Not started | - |
+| 2. Thin Digest | 0/2 | Planned | - |
+| 3. Canonical Story Formation | 0/2 | Not started | - |
+| 4. Ranked Discord Digest | 0/2 | Not started | - |
+| 5. Feedback & Suppression | 0/2 | Not started | - |
 
 ## Risk Register
 
@@ -136,5 +133,5 @@ See `.planning/RISK-REVIEW.md` for the full risk register (R1-R10), assumption a
 
 **Top risks informing roadmap structure:**
 - ~~**R1 (Critical):** MicroClaw proves insufficient~~ - **CLOSED 2026-04-23** via Plan 00-01 GO
-- **R2 (High):** Long time to first useful digest - mitigated by Phase 1.5 thin digest milestone
+- **R2 (High):** Long time to first useful digest - mitigated by Phase 2 thin digest milestone
 - **R3 (High):** OpenRouter-hosted model quality unverified - mitigated by Phase 0 Plan 00-02 evaluation (per-task starters from D-18)
