@@ -3,11 +3,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 import logging
 
-from src.agent_hub.config import load_sources, load_models, load_openrouter_key
+from src.agent_hub.config import load_sources, load_models, load_openrouter_key, load_discord_config
 from src.agent_hub.ingester import fetch_feed, IngestionError
 from src.agent_hub.filter import relevance_filter
 from src.agent_hub.db import init_db, next_run_id, start_run, complete_run, insert_raw_items
-from src.agent_hub.discord import format_success, format_failure, format_no_items
+from src.agent_hub.discord import format_digest, format_failure, format_no_items, post_to_discord
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +32,7 @@ def run_digest(db_path: str | None = None, conn: sqlite3.Connection | None = Non
         sources = load_sources()
         models = load_models()
         api_key = load_openrouter_key()
+        discord_token, channel_id = load_discord_config()
 
         # Step 2: DB setup
         init_db(conn)
@@ -66,8 +67,17 @@ def run_digest(db_path: str | None = None, conn: sqlite3.Connection | None = Non
             complete_run(conn, run_id, "no_items", raw_count, 0, completed_at, None)
             return format_no_items(run_num, dt, run_id)
         else:
+            messages = format_digest(relevant_items, run_num, dt, run_id, raw_count, source_count)
+            posted = post_to_discord(messages, discord_token, channel_id)
+            if posted < len(messages):
+                logger.error(f"Discord API error after {posted}/{len(messages)} messages")
+                complete_run(
+                    conn, run_id, "partial", raw_count, relevant_count, completed_at,
+                    f"Discord API failed on chunk {posted + 1}"
+                )
+                return f"partial: posted {posted}/{len(messages)} messages"
             complete_run(conn, run_id, "success", raw_count, relevant_count, completed_at, None)
-            return format_success(run_num, raw_count, relevant_count, source_count, dt, run_id)
+            return f"posted {posted} messages"
 
     except Exception as e:
         completed_at = datetime.now(timezone.utc).isoformat()

@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import MagicMock, patch
 from src.agent_hub.ingester import fetch_feed
 
@@ -62,7 +61,7 @@ def test_fetches_all_enabled_sources(sample_sources):
     with patch("httpx.Client") as mock_client:
         mock_client.return_value.__enter__.return_value.get.return_value = mock_response
         for source in enabled:
-            items = fetch_feed(source["name"], source["url"])
+            fetch_feed(source["name"], source["url"])
             fetched_names.append(source["name"])
 
     assert fetched_names == [s["name"] for s in enabled]

@@ -1,6 +1,5 @@
 import sqlite3
 from datetime import date
-from pathlib import Path
 from src.agent_hub.ingester import RawItem
 
 CREATE_RAW_ITEMS = """CREATE TABLE IF NOT EXISTS raw_items (
@@ -19,7 +18,7 @@ CREATE_RUNS = """CREATE TABLE IF NOT EXISTS runs (
     run_number     INTEGER NOT NULL,
     started_at     TEXT NOT NULL,
     completed_at   TEXT,
-    status         TEXT,
+    status         TEXT,  -- running | success | no_items | failure | partial
     raw_count      INTEGER DEFAULT 0,
     relevant_count INTEGER DEFAULT 0,
     error_message  TEXT
