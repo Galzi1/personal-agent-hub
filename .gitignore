@@ -3,3 +3,4 @@
 /microclaw.config.yaml
 !config/models.yaml
 config/microclaw.config.yaml
+.env
