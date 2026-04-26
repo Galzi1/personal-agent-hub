@@ -8,6 +8,7 @@ channels:
   discord:
     enabled: true
     default_account: "main"
+    channel_id: "${DISCORD_CHANNEL_ID}"
     accounts:
       main:
         enabled: true
