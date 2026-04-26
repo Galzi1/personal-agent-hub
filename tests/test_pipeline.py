@@ -93,7 +93,31 @@ def test_run_digest_returns_confirmation(tmp_db_conn):
 
 
 def test_run_digest_partial_on_discord_failure(tmp_db_conn):
-    """D-16, D-17: mid-stream Discord API failure marks run as partial; returns 'partial:...' string."""
+    """D-16, D-17: mid-stream Discord failure (2nd message) marks run as partial."""
+    item = _make_item(1)
+    mock_resp_ok = MagicMock()
+    mock_resp_ok.raise_for_status.return_value = None
+    mock_resp_fail = MagicMock()
+    mock_resp_fail.raise_for_status.side_effect = httpx.HTTPStatusError(
+        "403 Forbidden", request=MagicMock(), response=MagicMock()
+    )
+    with patch("src.agent_hub.pipeline.fetch_feed", return_value=[item]), \
+         patch("src.agent_hub.pipeline.relevance_filter", return_value=[item]), \
+         patch("src.agent_hub.pipeline.load_sources", return_value=[{"name": "S", "url": "u", "enabled": True}]), \
+         patch("src.agent_hub.pipeline.load_models", return_value={"relevance": "m"}), \
+         patch("src.agent_hub.pipeline.load_openrouter_key", return_value="key"), \
+         patch("src.agent_hub.pipeline.load_discord_config", return_value=("tok", "123")), \
+         patch("src.agent_hub.pipeline.format_digest", return_value=["msg1", "msg2"]), \
+         patch("httpx.Client") as mock_client:
+        mock_client.return_value.__enter__.return_value.post.side_effect = [mock_resp_ok, mock_resp_fail]
+        result = run_digest(conn=tmp_db_conn)
+    assert result.startswith("partial")
+    row = tmp_db_conn.execute("SELECT status FROM runs").fetchone()
+    assert row[0] == "partial"
+
+
+def test_run_digest_failure_on_complete_discord_error(tmp_db_conn):
+    """Discord complete failure (first message fails) marks run as failure."""
     item = _make_item(1)
     mock_resp_fail = MagicMock()
     mock_resp_fail.raise_for_status.side_effect = httpx.HTTPStatusError(
@@ -108,6 +132,6 @@ def test_run_digest_partial_on_discord_failure(tmp_db_conn):
          patch("httpx.Client") as mock_client:
         mock_client.return_value.__enter__.return_value.post.return_value = mock_resp_fail
         result = run_digest(conn=tmp_db_conn)
-    assert result.startswith("partial")
+    assert result.startswith("\u274c")
     row = tmp_db_conn.execute("SELECT status FROM runs").fetchone()
-    assert row[0] == "partial"
+    assert row[0] == "failure"

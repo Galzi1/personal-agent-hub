@@ -70,10 +70,12 @@ def post_to_discord(messages: list[str], token: str, channel_id: str) -> int:
     posted = 0
     with httpx.Client(timeout=30.0) as client:
         for msg in messages:
-            resp = client.post(url, headers=headers, json={"content": msg})
             try:
+                resp = client.post(url, headers=headers, json={"content": msg})
                 resp.raise_for_status()
-            except httpx.HTTPStatusError:
+            except (httpx.HTTPStatusError, httpx.RequestError):
+                if posted == 0:
+                    raise
                 return posted
             posted += 1
     return posted
