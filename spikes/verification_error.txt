@@ -1,0 +1,2 @@
+# This file is a placeholder as PyYAML seems to be incorrectly installed in the venv.
+# Task 1 verification failed due to ModuleNotFoundError: No module named 'yaml'.

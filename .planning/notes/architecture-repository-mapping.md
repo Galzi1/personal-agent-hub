@@ -84,7 +84,13 @@ context: Exploration of which GitHub starred repositories best implement each co
 | Source | Repository | Role |
 |--------|-----------|------|
 | **MicroClaw native** | `microclaw/microclaw` | Web UI at `:10961` |
-| Enhancement | `saltbo/agent-kanban` | Agent-first task board overlay |
+| Enhancement | `saltbo/agent-kanban` (188⭐) | Agent-first task board overlay for multi-agent workforce visibility |
+
+### Memory & Knowledge (Phase 4+)
+| Source | Repository | Role |
+|--------|-----------|------|
+| Research candidate | `topoteretes/cognee` (15K⭐) | Knowledge engine for agent memory via knowledge graphs — potential upgrade from raw SQLite memory tables |
+| Research candidate | `vectorize-io/hindsight` (9K⭐) | "Agent Memory That Learns" — aligns with feedback-driven memory promotion pattern in layered-memory-model.md |
 
 ---
 
@@ -104,6 +110,10 @@ context: Exploration of which GitHub starred repositories best implement each co
 - **6/8 components** covered natively by MicroClaw
 - **2/8 components** (Observability, Worker specialization) need extensions
 - All extensions wire in via MCP (portable, standard protocol)
+
+## Inspiration & Reference
+
+- [Squid Club: "I Built a Discord Server Where 7 AI Agents Help Me Build My Product"](https://www.squid-club.com/blog/i-built-a-discord-server-where-7-ai-agents-help-me-build-my-product) — Author built NanoClaw. Key validated patterns: visible inter-agent communication through Discord, 4-class memory model (identical to layered-memory-model.md), constraint-based agent design over step-by-step scripts, mandatory memory for agent improvement, and "start with one agent then expand." Key warnings: agents can fabricate internal channels (enforce visible routing), bloated system prompts degrade output quality, positive feedback must be saved alongside corrections.
 
 ## Source Lists Analyzed
 
