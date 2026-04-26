@@ -1,6 +1,5 @@
 import sqlite3
 from datetime import date
-from pathlib import Path
 from src.agent_hub.ingester import RawItem
 
 CREATE_RAW_ITEMS = """CREATE TABLE IF NOT EXISTS raw_items (

@@ -2,7 +2,6 @@ import uuid
 import httpx
 import feedparser
 from datetime import datetime, timezone
-from time import mktime
 from typing import Optional
 from pydantic import BaseModel
 
