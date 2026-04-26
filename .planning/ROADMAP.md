@@ -55,8 +55,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md - Define simple listing format and template
-- [ ] 02-02-PLAN.md - Wire listing format into pipeline delivery
+- [ ] 02-01-PLAN.md - format_digest() + post_to_discord() in discord.py, load_discord_config() in config.py, partial status in db.py, all tests green (Wave 1)
+- [ ] 02-02-PLAN.md - Wire format_digest + post_to_discord into pipeline.py Step 6, update MicroClaw prompt, add channel_id to config (Wave 2)
 
 ### Phase 3: Canonical Story Formation
 **Goal**: User gets one trustworthy story per underlying update, with uncertainty visible before stories are selected into the digest.
