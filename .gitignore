@@ -4,3 +4,8 @@
 !config/models.yaml
 config/microclaw.config.yaml
 .env
+*.venvScriptsactivate
+.claude/worktrees
+.pytest_cache/
+.ruff_cache/
+.venv/
