@@ -56,8 +56,8 @@ show_thinking: false
 # openai_compat_body_overrides_by_model:
 #   gpt-5.2: { response_format: { type: "json_object" } }
 
-data_dir: "C:\\Users\\galzi\\.microclaw"
-working_dir: "C:\\Users\\galzi\\.microclaw\\working_dir"
+data_dir: "${MICROCLAW_DATA_DIR}"
+working_dir: "${MICROCLAW_WORKING_DIR}"
 # Optional timezone override (IANA), e.g. Asia/Shanghai. Default: system timezone.
 high_risk_tool_user_confirmation_required: true
 # Optional container sandbox for bash tool execution
@@ -82,5 +82,5 @@ web_fetch_url_validation:
     enabled: false
 
 # Optional SOUL files directory (defaults to <data_dir>/souls)
-souls_dir: "C:\\Users\\galzi\\.microclaw\\souls"
+souls_dir: "${MICROCLAW_SOULS_DIR}"
 openrouter_api_key: "${OPENROUTER_API_KEY}"
