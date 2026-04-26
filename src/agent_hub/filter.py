@@ -83,8 +83,21 @@ def relevance_filter(items: list[RawItem], model: str, api_key: str) -> list[Raw
             raw_content = raw_content.split("```")[-1].split("```")[0].strip()
 
         verdicts = json.loads(raw_content)
-        pass_ids = {v["id"] for v in verdicts if v.get("verdict") == "PASS"}
+        if not isinstance(verdicts, list):
+            raise FilterError(f"OpenRouter response is not a list. Raw: {raw_content[:200]}")
+
+        pass_ids = set()
+        for v in verdicts:
+            if not isinstance(v, dict) or "id" not in v or "verdict" not in v:
+                continue
+            if v["verdict"] == "PASS":
+                pass_ids.add(v["id"])
     except (KeyError, json.JSONDecodeError, TypeError) as e:
-        raise FilterError(f"Failed to parse OpenRouter response: {e}. Raw: {raw_content[:200]}")
+        # Check if raw_content was defined (it should be, but being safe)
+        content_for_error = locals().get("raw_content", "undefined")
+        raise FilterError(f"Failed to parse OpenRouter response: {e}. Raw: {str(content_for_error)[:200]}")
+    except Exception as e:
+        content_for_error = locals().get("raw_content", "undefined")
+        raise FilterError(f"Unexpected error parsing response: {e}. Raw: {str(content_for_error)[:200]}")
 
     return [item for i, item in enumerate(items, 1) if i in pass_ids]

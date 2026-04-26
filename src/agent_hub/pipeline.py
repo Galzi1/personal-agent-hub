@@ -19,7 +19,9 @@ def run_digest(db_path: str | None = None, conn: sqlite3.Connection | None = Non
     own_conn = False
 
     if conn is None:
-        db_path = db_path or r"C:\Users\galzi\.microclaw\runtime\microclaw.db"
+        # Default path relative to user profile
+        default_db = Path.home() / ".microclaw" / "runtime" / "microclaw.db"
+        db_path = db_path or str(default_db)
         # Ensure directory exists for the db_path
         Path(db_path).parent.mkdir(parents=True, exist_ok=True)
         conn = sqlite3.connect(db_path)
@@ -62,15 +64,18 @@ def run_digest(db_path: str | None = None, conn: sqlite3.Connection | None = Non
         # Step 6: Notify
         if relevant_count == 0:
             complete_run(conn, run_id, "no_items", raw_count, 0, completed_at, None)
-            return format_no_items(run_num, dt)
+            return format_no_items(run_num, dt, run_id)
         else:
             complete_run(conn, run_id, "success", raw_count, relevant_count, completed_at, None)
-            return format_success(run_num, raw_count, relevant_count, source_count, dt)
+            return format_success(run_num, raw_count, relevant_count, source_count, dt, run_id)
 
     except Exception as e:
         completed_at = datetime.now(timezone.utc).isoformat()
         try:
-            complete_run(conn, run_id, "failure", 0, 0, completed_at, str(e))
+            # Persistent counts for failure runs if we have them
+            current_raw = locals().get("all_items", [])
+            raw_count = len(current_raw) if isinstance(current_raw, list) else 0
+            complete_run(conn, run_id, "failure", raw_count, 0, completed_at, str(e))
         except Exception:
             pass
         return format_failure(run_num, str(e), run_id, dt)

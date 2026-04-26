@@ -33,9 +33,9 @@ Bootstrap the pipeline that gathers AI news items from validated RSS feeds and m
 
 ### Run Status Discord UX
 - **D-08:** Three distinct Discord message formats, one per run outcome:
-  - **Success:** `✅ Run #N - YYYY-MM-DD HH:MM\n{raw} fetched → {relevant} relevant items from {n} sources`
+  - **Success:** `✅ Run #N - YYYY-MM-DD HH:MM\n{raw} fetched → {relevant} relevant items from {n} sources\nRun ID: run-N-YYYY-MM-DD`
   - **Failure:** `❌ Run #N failed - YYYY-MM-DD HH:MM\n{error reason}\nRun ID: run-N-YYYY-MM-DD`
-  - **No items:** `⚠️ Run #N - YYYY-MM-DD HH:MM\n0 relevant items (all sources returned no new AI content)`
+  - **No items:** `⚠️ Run #N - YYYY-MM-DD HH:MM\n0 relevant items (all sources returned no new AI content)\nRun ID: run-N-YYYY-MM-DD`
 - **D-09:** Run ID included in every message for traceability. Format: `run-{N}-{YYYY-MM-DD}`.
 - **D-10:** Success message shows both raw fetch count and post-filter relevant count so over-aggressive filtering is visible.
 - **D-11:** Plan 01-04's "3 separate Discord milestone posts" are dev-time run markers (bootstrap, ingestion, schedule registration) - not the same as the daily run-status UX defined in D-08/D-10.

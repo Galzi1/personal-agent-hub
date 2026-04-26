@@ -49,7 +49,7 @@ def fetch_feed(name: str, url: str) -> list[RawItem]:
 
         published_at = None
         if parsed_date:
-            published_at = datetime.fromtimestamp(mktime(parsed_date), tz=timezone.utc).isoformat()
+            published_at = datetime(*parsed_date[:6], tzinfo=timezone.utc).isoformat()
 
         items.append(RawItem(
             id=str(uuid.uuid4()),

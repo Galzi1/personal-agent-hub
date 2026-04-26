@@ -330,19 +330,20 @@ def next_run_id(conn: sqlite3.Connection) -> tuple[int, str]:
 # Source: D-08 exact formats confirmed by user in CONTEXT.md specifics section
 from datetime import datetime
 
-def format_success(run_num: int, raw: int, relevant: int, sources: int, dt: datetime) -> str:
+def format_success(run_num: int, raw: int, relevant: int, sources: int, dt: datetime, run_id: str) -> str:
     ts = dt.strftime("%Y-%m-%d %H:%M")
-    return f"✅ Run #{run_num} - {ts}\n{raw} fetched → {relevant} relevant items from {sources} sources"
+    return f"✅ Run #{run_num} - {ts}\n{raw} fetched → {relevant} relevant items from {sources} sources\nRun ID: {run_id}"
 
 def format_failure(run_num: int, error: str, run_id: str, dt: datetime) -> str:
     ts = dt.strftime("%Y-%m-%d %H:%M")
     return f"❌ Run #{run_num} failed - {ts}\n{error}\nRun ID: {run_id}"
 
-def format_no_items(run_num: int, dt: datetime) -> str:
+def format_no_items(run_num: int, dt: datetime, run_id: str) -> str:
     ts = dt.strftime("%Y-%m-%d %H:%M")
     return (
         f"⚠️ Run #{run_num} - {ts}\n"
-        "0 relevant items (all sources returned no new AI content)"
+        f"0 relevant items (all sources returned no new AI content)\n"
+        f"Run ID: {run_id}"
     )
 ```
 
