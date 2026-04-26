@@ -413,17 +413,15 @@ complete_run(conn, run_id, "partial", raw_count, relevant_count, completed_at, e
 
 **Note:** A2 and A3 are within Claude's discretion per CONTEXT.md. They are recommendations, not locked decisions.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **How does MicroClaw dispatch the scheduled pipeline run and relay its output?**
    - What we know: Phase 1 pipeline's `if __name__ == "__main__": print(run_digest())` is the entrypoint. MicroClaw scheduled task triggers `uv run python -m agent_hub.pipeline`. MicroClaw posts the print output to Discord (that was the Phase 1 mechanism).
-   - What's unclear: The exact MicroClaw scheduled task prompt text that currently causes it to post the output. Needed to write the updated D-14 prompt.
-   - Recommendation: Read the active MicroClaw scheduled task configuration during Wave 1 before updating the prompt. Check `config/microclaw.config.yaml` or the MicroClaw control panel.
+   - **RESOLVED:** Prompt discovery deferred to execution time - Plan 02-02 Task 2 (checkpoint) handles reading the active MicroClaw scheduled task config before updating the prompt.
 
 2. **Where does DISCORD_CHANNEL_ID live?**
    - What we know: D-13 says "add to .env". But python-dotenv is not installed and the project reads secrets from `microclaw.config.yaml`.
-   - What's unclear: Whether to add `channel_id` to `microclaw.config.yaml` (consistent with existing pattern) or to `.env` (per D-13 literal text, requiring MicroClaw to inject it via env).
-   - Recommendation: Add `channel_id` to `microclaw.config.yaml` under `channels.discord.channel_id`. This is within Claude's discretion and avoids introducing python-dotenv as a dependency.
+   - **RESOLVED:** Store as `channels.discord.channel_id` in `microclaw.config.yaml` - consistent with the existing `load_openrouter_key()` pattern. Avoids introducing python-dotenv. This is within Claude's discretion per CONTEXT.md.
 
 ## Environment Availability
 
