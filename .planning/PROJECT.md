@@ -60,16 +60,16 @@ Deliver a high-signal, low-noise AI intelligence feed early enough to be useful,
 | Use layered memory with agent-local and shared project memory | Durable context should be curated by memory class instead of dumped into one generic store | - Pending |
 | Keep major agent handoffs visible in chat and auditable in the control panel | User trust and debugging improve when important routing events are exposed | - Pending |
 | Run validation spikes before Phase 1 implementation | Risk review identified MicroClaw (R1), LLM model quality (R3), and watchlist coverage (R4) as testable unknowns that should be resolved early | Phase 0 added to roadmap; R1 CLOSED 2026-04-23; R3 under evaluation via Plan 00-02 |
-| Add thin digest milestone after Phase 1 | Risk review identified motivation attrition from long time to first useful digest (R2) as a high risk | Phase 1.5 added to roadmap |
+| Add thin digest milestone after Phase 1 | Risk review identified motivation attrition from long time to first useful digest (R2) as a high risk | Phase 2 added to roadmap |
 | Enforce planning-to-execution ratio guard | Risk review identified over-planning relative to execution (R6) - no new planning artifacts until current phase first plan is implemented and passing | Active constraint |
 
 ## Risks
 
-A formal risk review was conducted on 2026-04-12. The full risk register with 10 identified risks (R1-R10), assumption analysis, and recommended actions is maintained in `.planning/RISK-REVIEW.md`.
+A formal risk review was conducted on 2026-04-12. Full risk register: `.planning/RISK-REVIEW.md`.
 
 **Critical risks actively mitigated by roadmap structure:**
 - ~~**R1:** MicroClaw as single point of failure~~ - **CLOSED 2026-04-23** via Plan 00-01 GO
-- **R2:** Long time to first useful digest - Phase 1.5 thin digest milestone
+- **R2:** Long time to first useful digest - Phase 2 thin digest milestone
 - **R3:** OpenRouter-hosted model quality uncertainty - Phase 0 Plan 00-02 evaluation spike
 
 ## Evolution
