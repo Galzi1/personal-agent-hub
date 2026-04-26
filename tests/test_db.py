@@ -43,3 +43,15 @@ def test_runs_crud(tmp_db_conn):
     assert row[0] == "success"
     assert row[1] == 18
     assert row[2] == 12
+
+
+def test_partial_status_accepted(tmp_db_conn):
+    """D-17: complete_run() accepts 'partial' as a valid status string."""
+    init_db(tmp_db_conn)
+    run_num, run_id = next_run_id(tmp_db_conn)
+    start_run(tmp_db_conn, run_id, run_num, "2026-04-26T08:00:00Z")
+    complete_run(tmp_db_conn, run_id, "partial", 10, 5, "2026-04-26T08:01:00Z",
+                 "Discord API failed on chunk 2: 503")
+    row = tmp_db_conn.execute("SELECT status, error_message FROM runs WHERE run_id=?", (run_id,)).fetchone()
+    assert row[0] == "partial"
+    assert "chunk 2" in row[1]
