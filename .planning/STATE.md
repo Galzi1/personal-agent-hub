@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Phase 2 context gathered
-last_updated: "2026-04-26T18:33:12.828Z"
-last_activity: 2026-04-26
+status: in_progress
+stopped_at: Phase 2 complete, roadmap revised
+last_updated: "2026-04-27T00:00:00.000Z"
+last_activity: 2026-04-27
 progress:
-  total_phases: 6
-  completed_phases: 1
-  total_plans: 9
-  completed_plans: 4
-  percent: 44
+  total_phases: 10
+  completed_phases: 3
+  total_plans: 15
+  completed_plans: 9
+  percent: 60
 ---
 
 # Project State
@@ -21,26 +21,26 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-11)
 
 **Core value:** Deliver a high-signal, low-noise AI intelligence feed early enough to be useful instead of forcing reactive scrolling through repetitive coverage.
-**Current focus:** Phase 2 - thin-digest
+**Current focus:** Phase 3 - Source Coverage Fix
 
 ## Current Position
 
-Phase: 2 (thin-digest) - PLANNING
-Plan: 1 of TBD
-Status: Phase 1 complete - live pipeline wired and scheduled
-Last activity: 2026-04-26
+Phase: 3 (source-coverage-fix) - PLANNING
+Plan: 1 of 2
+Status: Phase 2 complete - thin digest posting to Discord confirmed
+Last activity: 2026-04-27
 
-Note: Phase 0 and Phase 1 are complete. End-to-end integration verified via live Discord posts.
+Note: Phases 0, 1, and 2 are complete. End-to-end pipeline wired, live Discord posts confirmed.
 
-Progress: [██████████] 100% (Sub-milestone)
+Progress: [██████████] 100% (Phase 2)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 9
 - Average duration: 30 min
-- Total execution time: 3.5 hours
+- Total execution time: ~4.5 hours
 
 **By Phase:**
 
@@ -48,10 +48,11 @@ Progress: [██████████] 100% (Sub-milestone)
 |-------|-------|-------|----------|
 | 00 | 3 | 90m | 30m |
 | 01 | 4 | 120m | 30m |
+| 02 | 2 | 60m | 30m |
 
 **Recent Trend:**
 
-- Last 5 plans: 01-01, 01-02, 01-03, 01-04, 00-03
+- Last 5 plans: 02-01, 02-02, 01-04, 01-03, 01-02
 - Trend: Stable
 
 ## Accumulated Context
@@ -63,8 +64,10 @@ Recent decisions affecting current work:
 
 - [Phase 1]: Start with one explicit Discord-delivered daily digest workflow before expanding into adjacent workflows.
 - [Phase 1]: Treat curated multi-source intake and observable run status as the first delivery boundary.
-- [Phase 3]: Treat canonical story formation as the core domain model for deduplication and confidence handling.
+- [Phase 2]: Thin digest confirmed end-to-end pipeline is viable before adding ranking complexity.
 - Plan 00-02 closed R3 (OpenRouter model quality) with a PASS verdict.
+- [Roadmap 2026-04-27]: Removed Phase 3 (Canonical Story Formation) and Phase 5 (Feedback & Suppression) as redundant. Old Phase 4 renumbered to Phase 3. Added Phases 4-9: Source Coverage Fix, URL Deduplication, Daily Scheduling, Self-Healing, Persistent Logs, Nanoclaw Migration.
+- [Roadmap 2026-04-27]: Phases reorganized into 3 milestones. New order: Phase 4=Daily Scheduling, Phase 5=Self-Healing, Phase 6=URL Dedup, Phase 7=Nanoclaw Spike, Phase 8=Nanoclaw Migration, Phase 9=Persistent Logs, Phase 10=Ranked Digest. Milestones: "MicroClaw AI Digest MVP" (0-6), "NanoClaw Migration" (7-8), "Reliability Enhancements" (9-10).
 
 ### Tracked Risks
 
@@ -73,9 +76,9 @@ Risk review conducted 2026-04-12. Full register: `.planning/RISK-REVIEW.md`
 Top risks actively tracked:
 
 - **R1 (Critical):** MicroClaw may prove insufficient - **CLOSED 2026-04-23** via Plan 00-01 GO (all 4 smoke tests PASS; see 00-01-SPIKE-RESULTS.md)
-- **R2 (High):** Long time to first useful digest - thin digest milestone in Phase 2
+- **R2 (High):** Long time to first useful digest - **MITIGATED 2026-04-27** via Phase 2 thin digest delivery
 - **R3 (High):** OpenRouter-hosted model quality unverified - evaluation spike in Phase 0 (Plan 00-02, finalized and ready; per-task starters from D-18)
-- **R4 (High):** Watchlist coverage insufficient - backtest spike in Phase 0 (Plan 00-03, finalized and ready)
+- **R4 (High):** Watchlist coverage insufficient - **known issue**: first live run produced items only from OpenAI Blog; Phase 4 addresses this
 
 Additional concerns:
 
@@ -90,10 +93,8 @@ None yet.
 
 ### Blockers/Concerns
 
-- Need the exact Discord feedback UX decided before Phase 5 execution.
-- Need the exact starter source allowlist chosen during Phase 1 planning.
-- MicroClaw Discord adapter requires @-mention routing for inbound flows (F1 in 00-01-SPIKE-RESULTS, locked as D-23); Phase 1 is daily-digest outbound-only per D-24, so F1 does not block Phase 1. Phase 3+ inbound flows must design around it.
-- OpenRouter-hosted model quality must meet minimum thresholds before Phase 3 planning (R3). Per-task starters (D-18) under $20 spend cap (D-22).
+- First live digest contained only OpenAI Blog items - Phase 4 (Source Coverage Fix) must diagnose and fix before Phase 3 ranking is meaningful.
+- MicroClaw Discord adapter requires @-mention routing for inbound flows (F1 in 00-01-SPIKE-RESULTS, locked as D-23); Phase 9 Nanoclaw migration must account for this.
 - `config/models.yaml` and relocated `config/microclaw.config.yaml` are Plan 00-02 setup outputs (D-19, D-20, D-21) that later phases will consume.
 
 ### Quick Tasks Completed
@@ -101,11 +102,12 @@ None yet.
 | # # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260412-uyu | Adjust planning artifacts according to risk review recommendations | 2026-04-12 | ea1a6c6 | [260412-uyu-adjust-planning-artifacts-according-to-r](./quick/260412-uyu-adjust-planning-artifacts-according-to-r/) |
+| 260427-nck | Reorder roadmap phases and organize into milestones | 2026-04-27 | TBD | [260427-nck-reorder-roadmap-phases-and-organize-into](./quick/260427-nck-reorder-roadmap-phases-and-organize-into/) |
 
 ## Session Continuity
 
-Last session: Phase 2 context gathered
+Last session: Phase 2 complete, roadmap revised (10 phases, Phases 3-9 planned)
 Stopped at: None
 Resume file: None
 
-**Planned Phase:** 2 (Thin Digest) - 2 plans - 2026-04-26T18:33:12.809Z
+**Next Phase:** 3 (Source Coverage Fix) - 1 plan
