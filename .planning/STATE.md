@@ -102,7 +102,7 @@ None yet.
 | # # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260412-uyu | Adjust planning artifacts according to risk review recommendations | 2026-04-12 | ea1a6c6 | [260412-uyu-adjust-planning-artifacts-according-to-r](./quick/260412-uyu-adjust-planning-artifacts-according-to-r/) |
-| 260427-nck | Reorder roadmap phases and organize into milestones | 2026-04-27 | TBD | [260427-nck-reorder-roadmap-phases-and-organize-into](./quick/260427-nck-reorder-roadmap-phases-and-organize-into/) |
+| 260427-nck | Reorder roadmap phases and organize into milestones | 2026-04-27 | 0477981 | [260427-nck-reorder-roadmap-phases-and-organize-into](./quick/260427-nck-reorder-roadmap-phases-and-organize-into/) |
 
 ## Session Continuity
 
