@@ -56,4 +56,30 @@
 - Spike-before-commit pattern (Phase 7) mirrors Phase 0 approach for MicroClaw
 
 ---
+
+## v3.0 Reliability Enhancements
+
+**Status:** Planned  
+**Depends on:** Phase 2 complete (can begin after thin digest; runs parallel to M1/M2 remaining phases)  
+**Goal:** Make the pipeline debuggable and the digest output high-signal via persistent logs and relevance ranking.
+
+**Phases:** 9–10
+
+| Phase | Name | Status | Completed |
+|-------|------|--------|-----------|
+| 9 | Persistent Searchable Logs | Planned | - |
+| 10 | Ranked Digest | Planned | - |
+
+**Requirements delivered:**
+- SIG-02: Ranked shortlist of most relevant daily stories (Phase 10)
+- SIG-03: "Why it matters" explanation per item (Phase 10)
+- DGST-02: Citations to supporting source links (Phase 10)
+- DGST-03: Digest sections by category (Phase 10)
+
+**Key decisions:**
+- OpenSearch vs Elasticsearch: evaluate for Windows-friendly local dev setup (Phase 9)
+- Structured JSON log events (not free-text) to enable field-level queries (Phase 9)
+- Digest capped at top 10 items (Phase 10)
+
+---
 *Last updated: 2026-04-27*
