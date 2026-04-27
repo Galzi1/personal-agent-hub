@@ -33,4 +33,27 @@
 - Thin digest milestone added to mitigate R2 (long time to first value)
 
 ---
+
+## v2.0 NanoClaw Migration
+
+**Status:** Planned  
+**Depends on:** v1.0 complete (Phase 6 done)  
+**Goal:** Validate Nanoclaw as viable migration target, then migrate the pipeline from MicroClaw to Nanoclaw.
+
+**Phases:** 7–8
+
+| Phase | Name | Status | Completed |
+|-------|------|--------|-----------|
+| 7 | Nanoclaw Capability Spike | Planned | - |
+| 8 | Nanoclaw Migration | Planned | - |
+
+**Requirements delivered:** None (platform migration - no user-facing requirements)
+
+**Gate:** Phase 8 blocked unless Phase 7 records a GO verdict.
+
+**Key decisions:**
+- Nanoclaw chosen as migration target (lighter-weight successor to MicroClaw, 27k★ vs 643★)
+- Spike-before-commit pattern (Phase 7) mirrors Phase 0 approach for MicroClaw
+
+---
 *Last updated: 2026-04-27*
