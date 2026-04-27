@@ -101,7 +101,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 03-01-PLAN.md - Audit ingester/filter for source bias, add per-source logging, fix coverage gaps
+- [ ] 03-01-PLAN.md - Add recency window (48h), raise filter cap 50→150, per-source breakdown in Discord, coverage warning
 
 ### Phase 4: Daily Scheduling
 **Goal**: Digest runs automatically at 9:00 AM Israel time (Asia/Jerusalem) every day without manual invocation.
