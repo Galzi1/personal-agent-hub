@@ -3,7 +3,10 @@
     "allow": [
       "Bash(git checkout *)",
       "Skill(pr-review-toolkit:review-pr)",
-      "Skill(gsd-discuss-phase)"
+      "Skill(gsd-discuss-phase)",
+      "Skill(gsd-quick)",
+      "Skill(gsd-new-milestone)",
+      "Skill(gsd-plan-phase)"
     ]
   }
 }

@@ -1,0 +1,1 @@
+C:/Users/galzi/src/personal-agent-hub/AGENTS.md
