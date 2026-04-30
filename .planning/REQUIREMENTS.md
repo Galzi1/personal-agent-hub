@@ -7,7 +7,7 @@
 
 ### Sources
 
-- [ ] **SRC-01**: User receives candidate updates gathered from a curated multi-source watchlist rather than a single feed.
+- [x] **SRC-01**: User receives candidate updates gathered from a curated multi-source watchlist rather than a single feed. *(Phase 1 - complete 2026-04-26)*
 - [ ] **SRC-02**: User can define tracked topics covering model releases, AI coding tools, useful new AI tools, and hot trends.
 
 ### Signal
@@ -19,10 +19,10 @@
 
 ### Digest
 
-- [ ] **DGST-01**: User receives the daily digest in Discord.
+- [x] **DGST-01**: User receives the daily digest in Discord. *(Phase 2 - complete 2026-04-27)*
 - [ ] **DGST-02**: Each digest item includes citations to the supporting source links.
 - [ ] **DGST-03**: User can scan digest sections for model releases, AI coding tools, new AI tools, and hot trends.
-- [ ] **DGST-04**: User can see whether the daily digest run completed, failed, or produced no qualifying items.
+- [x] **DGST-04**: User can see whether the daily digest run completed, failed, or produced no qualifying items. *(Phase 1 - complete 2026-04-26)*
 
 ### Feedback
 
@@ -66,25 +66,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SRC-01 | Phase 1 | Pending |
+| SRC-01 | Phase 1 | Complete 2026-04-26 |
 | SRC-02 | Phase 3 | Pending |
-| SIG-01 | Phase 2 | Pending |
-| SIG-02 | Phase 3 | Pending |
-| SIG-03 | Phase 3 | Pending |
-| SIG-04 | Phase 2 | Pending |
-| DGST-01 | Phase 3 | Pending |
-| DGST-02 | Phase 3 | Pending |
-| DGST-03 | Phase 3 | Pending |
-| DGST-04 | Phase 1 | Pending |
-| FDBK-01 | Phase 4 | Pending |
-| FDBK-02 | Phase 4 | Pending |
-| FDBK-03 | Phase 4 | Pending |
+| SIG-01 | Phase 6 | Pending |
+| SIG-02 | Phase 10 | Pending |
+| SIG-03 | Phase 10 | Pending |
+| SIG-04 | - | Unmapped (no current phase) |
+| DGST-01 | Phase 2 | Complete 2026-04-27 |
+| DGST-02 | Phase 10 | Pending |
+| DGST-03 | Phase 10 | Pending |
+| DGST-04 | Phase 1 | Complete 2026-04-26 |
+| FDBK-01 | - | Deferred (phase removed from roadmap) |
+| FDBK-02 | - | Deferred (phase removed from roadmap) |
+| FDBK-03 | - | Deferred (phase removed from roadmap) |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 13
-- Unmapped: 0 ✓
+- Mapped to phases: 9
+- Unmapped/deferred: 4 (SIG-04, FDBK-01, FDBK-02, FDBK-03)
 
 ---
 *Requirements defined: 2026-04-11*  
-*Last updated: 2026-04-11 after roadmap creation*
+*Last updated: 2026-04-27 - traceability corrected to match current roadmap (phases 1-10)*

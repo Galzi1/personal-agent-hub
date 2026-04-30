@@ -8,6 +8,18 @@ Personal Agent Hub is a personal AI-agent system for non-coding personal and bus
 
 Deliver a high-signal, low-noise AI intelligence feed early enough to be useful, instead of making the user hunt through repetitive posts after everyone else has already amplified them.
 
+## Current Milestone: v1.0 MicroClaw AI Digest MVP
+
+**Goal:** Deliver a fully functional, scheduled, self-healing AI digest pipeline on MicroClaw.
+
+**Target features:**
+- Source coverage fix - ensure ≥3 sources appear in each digest
+- Daily scheduling at 09:00 Asia/Jerusalem
+- Self-healing missed digests on startup
+- URL deduplication across digests
+
+**Status:** Phases 0–2 complete (validation, ingestion, thin digest). Phases 3–6 planned.
+
 ## Requirements
 
 ### Validated

@@ -5,7 +5,7 @@ import logging
 
 from src.agent_hub.config import load_sources, load_models, load_openrouter_key, load_discord_config
 from src.agent_hub.ingester import fetch_feed, IngestionError
-from src.agent_hub.filter import relevance_filter
+from src.agent_hub.filter import relevance_filter, apply_recency_window
 from src.agent_hub.db import init_db, next_run_id, start_run, complete_run, insert_raw_items
 from src.agent_hub.discord import format_digest, format_failure, format_no_items, post_to_discord
 
@@ -41,13 +41,12 @@ def run_digest(db_path: str | None = None, conn: sqlite3.Connection | None = Non
 
         # Step 3: Ingest
         all_items = []
-        source_count = 0
         for source in sources:
             if not source.get("enabled"):
                 continue
-            source_count += 1
             try:
                 items = fetch_feed(source["name"], source["url"])
+                logger.info(f"{source['name']}: {len(items)} items fetched")
                 all_items.extend(items)
             except IngestionError as e:
                 # Per-source fail: warn and continue
@@ -55,7 +54,15 @@ def run_digest(db_path: str | None = None, conn: sqlite3.Connection | None = Non
 
         # Step 4: Filter
         raw_count = len(all_items)
-        relevant_items = relevance_filter(all_items, models["relevance"], api_key)
+        windowed_items = apply_recency_window(all_items)
+        relevant_items = relevance_filter(windowed_items, models["relevance"], api_key)
+
+        # Derive contributing-source breakdown from filtered items (D-06)
+        source_breakdown: dict[str, int] = {}
+        for item in relevant_items:
+            source_breakdown[item.source_name] = source_breakdown.get(item.source_name, 0) + 1
+        for src_name, count in source_breakdown.items():
+            logger.info(f"{src_name}: {count} items passed filter")
 
         # Step 5: Persist
         insert_raw_items(conn, relevant_items, run_id)
@@ -67,7 +74,7 @@ def run_digest(db_path: str | None = None, conn: sqlite3.Connection | None = Non
             complete_run(conn, run_id, "no_items", raw_count, 0, completed_at, None)
             return format_no_items(run_num, dt, run_id)
         else:
-            messages = format_digest(relevant_items, run_num, dt, run_id, raw_count, source_count)
+            messages = format_digest(relevant_items, run_num, dt, run_id, raw_count, source_breakdown)
             posted = post_to_discord(messages, discord_token, channel_id)
             if posted < len(messages):
                 logger.error(f"Discord API error after {posted}/{len(messages)} messages")
