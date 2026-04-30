@@ -115,7 +115,11 @@ def relevance_filter(items: list[RawItem], model: str, api_key: str) -> list[Raw
     try:
         raw_content = data["choices"][0]["message"]["content"]
         # Clear markdown code blocks if the model wrapped the JSON
-        if "```" in raw_content:
+        if "```json" in raw_content.lower():
+            start = raw_content.lower().index("```json")
+            fenced_content = raw_content[start:].split("```", 1)[1]
+            raw_content = fenced_content.split("```", 1)[0].strip()
+        elif "```" in raw_content:
             fenced_content = raw_content.split("```", 1)[1]
             raw_content = fenced_content.split("```", 1)[0].strip()
             if "\n" in raw_content:
