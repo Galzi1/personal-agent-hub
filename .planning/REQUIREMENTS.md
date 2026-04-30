@@ -82,7 +82,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 10
+- Mapped to phases: 9
 - Unmapped/deferred: 4 (SIG-04, FDBK-01, FDBK-02, FDBK-03)
 
 ---

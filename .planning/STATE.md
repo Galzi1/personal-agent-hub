@@ -66,8 +66,8 @@ Recent decisions affecting current work:
 - [Phase 1]: Treat curated multi-source intake and observable run status as the first delivery boundary.
 - [Phase 2]: Thin digest confirmed end-to-end pipeline is viable before adding ranking complexity.
 - Plan 00-02 closed R3 (OpenRouter model quality) with a PASS verdict.
-- [Roadmap 2026-04-27]: Removed Phase 3 (Canonical Story Formation) and Phase 5 (Feedback & Suppression) as redundant. Old Phase 4 renumbered to Phase 3. Added Phases 4-9: Source Coverage Fix, URL Deduplication, Daily Scheduling, Self-Healing, Persistent Logs, Nanoclaw Migration.
-- [Roadmap 2026-04-27]: Phases reorganized into 3 milestones. New order: Phase 4=Daily Scheduling, Phase 5=Self-Healing, Phase 6=URL Dedup, Phase 7=Nanoclaw Spike, Phase 8=Nanoclaw Migration, Phase 9=Persistent Logs, Phase 10=Ranked Digest. Milestones: "MicroClaw AI Digest MVP" (0-6), "NanoClaw Migration" (7-8), "Reliability Enhancements" (9-10).
+- [Roadmap 2026-04-27]: Removed Canonical Story Formation and Feedback & Suppression as redundant. Remaining phases renumbered, making Source Coverage Fix Phase 3.
+- [Roadmap 2026-04-27]: Phases reorganized into 3 milestones. Current order: Phase 3=Source Coverage Fix, Phase 4=Daily Scheduling, Phase 5=Self-Healing, Phase 6=URL Dedup, Phase 7=Nanoclaw Spike, Phase 8=Nanoclaw Migration, Phase 9=Persistent Logs, Phase 10=Ranked Digest. Milestones: "MicroClaw AI Digest MVP" (0-6), "NanoClaw Migration" (7-8), "Reliability Enhancements" (9-10).
 
 ### Tracked Risks
 
@@ -93,7 +93,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- First live digest contained only OpenAI Blog items - Phase 4 (Source Coverage Fix) must diagnose and fix before Phase 3 ranking is meaningful.
+- First live digest contained only OpenAI Blog items - Phase 3 (Source Coverage Fix) must diagnose and fix before Phase 10 ranking is meaningful.
 - MicroClaw Discord adapter requires @-mention routing for inbound flows (F1 in 00-01-SPIKE-RESULTS, locked as D-23); Phase 9 Nanoclaw migration must account for this.
 - `config/models.yaml` and relocated `config/microclaw.config.yaml` are Plan 00-02 setup outputs (D-19, D-20, D-21) that later phases will consume.
 
