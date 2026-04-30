@@ -78,7 +78,7 @@ Top risks actively tracked:
 - **R1 (Critical):** MicroClaw may prove insufficient - **CLOSED 2026-04-23** via Plan 00-01 GO (all 4 smoke tests PASS; see 00-01-SPIKE-RESULTS.md)
 - **R2 (High):** Long time to first useful digest - **MITIGATED 2026-04-27** via Phase 2 thin digest delivery
 - **R3 (High):** OpenRouter-hosted model quality unverified - evaluation spike in Phase 0 (Plan 00-02, finalized and ready; per-task starters from D-18)
-- **R4 (High):** Watchlist coverage insufficient - **known issue**: first live run produced items only from OpenAI Blog; Phase 4 addresses this
+- **R4 (High):** Watchlist coverage insufficient - **known issue**: first live run produced items only from OpenAI Blog; Phase 3 addresses this
 
 Additional concerns:
 
