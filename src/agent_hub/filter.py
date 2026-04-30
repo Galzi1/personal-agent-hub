@@ -1,6 +1,12 @@
 import json
+import logging
+from datetime import datetime, timezone, timedelta
 import httpx
 from src.agent_hub.ingester import RawItem
+
+logger = logging.getLogger(__name__)
+RECENCY_HOURS = 48
+FILTER_CAP = 150
 
 class FilterError(Exception):
     """Raised when relevance filtering fails."""
@@ -27,6 +33,38 @@ You must respond with a JSON array of objects, each containing the 'id' (integer
 Example: [{"id": 1, "verdict": "PASS"}, {"id": 2, "verdict": "FAIL"}]
 """
 
+def apply_recency_window(items: list[RawItem]) -> list[RawItem]:
+    """Exclude items older than RECENCY_HOURS. Items with published_at=None pass through (D-01)."""
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=RECENCY_HOURS)
+    kept: list[RawItem] = []
+    source_item_counts: dict[str, int] = {}
+    source_kept_counts: dict[str, int] = {}
+
+    for item in items:
+        source_item_counts[item.source_name] = source_item_counts.get(item.source_name, 0) + 1
+        if item.published_at is None:
+            kept.append(item)
+            source_kept_counts[item.source_name] = source_kept_counts.get(item.source_name, 0) + 1
+        else:
+            try:
+                pub = datetime.fromisoformat(item.published_at)
+            except ValueError:
+                kept.append(item)
+                source_kept_counts[item.source_name] = source_kept_counts.get(item.source_name, 0) + 1
+                continue
+            if pub.tzinfo is None:
+                pub = pub.replace(tzinfo=timezone.utc)
+            if pub >= cutoff:
+                kept.append(item)
+                source_kept_counts[item.source_name] = source_kept_counts.get(item.source_name, 0) + 1
+
+    for source_name, total in source_item_counts.items():
+        if source_kept_counts.get(source_name, 0) == 0:
+            logger.warning(f"{source_name}: 0 items in 48h window - skipped")
+
+    return kept
+
+
 def relevance_filter(items: list[RawItem], model: str, api_key: str) -> list[RawItem]:
     """Filter items through OpenRouter to keep only highly relevant AI news."""
     if not items:
@@ -41,7 +79,7 @@ def relevance_filter(items: list[RawItem], model: str, api_key: str) -> list[Raw
 
     user_message_parts = []
     # limit to first 50 items to prevent context/token overflow in Phase 1
-    for i, item in enumerate(items[:50], 1):
+    for i, item in enumerate(items[:FILTER_CAP], 1):
         user_message_parts.append(f"ID {i}: {item.title}")
 
     user_message = "\n".join(user_message_parts)
